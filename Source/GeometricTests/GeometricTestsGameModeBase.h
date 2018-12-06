@@ -19,11 +19,6 @@
 #include "CoreMinimal.h"
 #include "GameFramework/GameModeBase.h"
 #include "GeometricTestsGameModeBase.generated.h"
-
-/*
- * What is the total memory load?
- * Run debugger to inspect memory usage and addresses.
- */
  
 /**
  * 
