@@ -59,7 +59,7 @@
  * 17. Reflection Vector
  * 18. Barycentric Coordinates of Triangle in 3D
  *
- * Updated December 5, 2018
+ * Updated December 11, 2018
 */
 UCLASS()
 class GEOMETRICTESTS_API UGeometricTestLibrary : public UObject
@@ -72,28 +72,28 @@ public:
 	template<typename T>
 	static Vector3<T> ClosestPointInAABB(
 		  const Vector3<T>& Point
-		, const AABB<T>& AABB_Ref) noexcept;
+		, const AABB<T>& AABB_Ref);
 		
 	// Closest Point on a Ray
 	template<typename T>
 	static Vector3<T> ClosestPointOnRay(
 		  const Vector3<T>& Point
 		, const Vector3<T>& RayOrigin
-		, const Vector3<T>& RayDirection) noexcept;
+		, const Vector3<T>& RayDelta);
 	
 	// Closest Point On Plane
 	template<typename T>
 	static Vector3<T> ClosestPointOnPlane(
 		  const Vector3<T>& Point			// q
 		, const Vector3<T>& PlaneNormal 	// n
-		, float PlaneD) noexcept;			// p*PlaneNormal = PlaneD	
+		, float PlaneD);					// p*PlaneNormal = PlaneD	
 	
 	// Closest Point On Sphere
 	template<typename T>
 	static Vector3<T> ClosestPointOnSphere(
 		  const Vector3<T>& Point
 		, const Vector3<T>& SphereCenter
-		, float SphereRadius) noexcept;
+		, float SphereRadius);
 		
 	// Intersection AABB-Plane
 	template<typename T>	
@@ -106,15 +106,15 @@ public:
 	template<typename T>
 	static Vector2<T> DoLinesIntersect(
 		  const Vector2<T>& Origin1
-		, const Vector2<T>& Direction1
+		, const Vector2<T>& Delta1
 		, const Vector2<T>& Origin2
-		, const Vector2<T>& Direction2);
+		, const Vector2<T>& Delta2);
 	
 	// Intersection Ray-AABB
 	template<typename T>
 	static float DoesRayAABBIntersect(
 		  const Vector3<T>& RayOrigin
-		, const Vector3<T>& RayDirection
+		, const Vector3<T>& RayDelta
 		, const AABB<T>& AABB_Ref
 		, Vector3<T>* ReturnNormal);
 	
@@ -122,7 +122,7 @@ public:
 	template<typename T>
 	static bool DoesRayPlaneIntersect(
 		  const Vector3<T>& RayOrigin
-		, const Vector3<T>& RayDirection
+		, const Vector3<T>& RayDelta
 		, const Vector3<T>& SurfaceNormal
 		, float PlaneD);
 		
@@ -132,32 +132,32 @@ public:
 		  const Vector3<T>& SphereCenter	
 		, float SphereRadius					
 		, const Vector3<T>& RayOrigin
-		, const Vector3<T>& RayDirection);
+		, const Vector3<T>& RayDelta);
 		
 	// Intersection Ray-Triangle
 	template<typename T>	
 	static float DoesRayTriangleIntersect(
 		  const Vector3<T>& RayOrigin		// origin of ray
-		, const Vector3<T>& RayDirection	// direction and length of ray
+		, const Vector3<T>& RayDelta		// direction and length of ray
 		, const Vector3<T>& Vertex1			// triangle vertices
 		, const Vector3<T>& Vertex2			// .
 		, const Vector3<T>& Vertex3			// .
-		, float MinT) noexcept;				// closest intersection found so far 
+		, float MinT);						// closest intersection found so far 
 	
 	// Intersection Two 3D Rays	
 	template<typename T>
 	static bool DoRaysIntersect(
 		  const Vector3<T>& RayOrigin1		// p1
-		, const Vector3<T>& RayDirection1	// d1
+		, const Vector3<T>& RayDelta1		// d1
 		, const Vector3<T>& RayOrigin2		// p2
-		, const Vector3<T>& RayDirection2);	// d2
+		, const Vector3<T>& RayDelta2);		// d2
 	
 	// Dynamic Intersection Sphere-Plane
 	template<typename T>
 	static bool DoesSpherePlaneIntersect_Dynamic(
 		  const Vector3<T>& PlaneNormal	// must be normalized first
 		, float PlaneD							
-		, const Vector3<T>& SphereDirectionVector
+		, const Vector3<T>& SphereDeltaVector
 		, const Vector3<T>& SphereCenter
 		, float SphereRadius);
 		
@@ -172,8 +172,8 @@ public:
 	// Dynamic Intersection of Two Spheres
 	template<typename T>
 	static bool DoSpheresIntersect_Dynamic(
-		  const Vector3<T>& StationaryDirectionVector
-		, const Vector3<T>& MovingDirectionVector
+		  const Vector3<T>& StationaryDeltaVector
+		, const Vector3<T>& MovingDeltaVector
 		, const Vector3<T>& StationarySphereCenter
 		, const Vector3<T>& MovingSphereCenter
 		, float StationarySphereRadius
@@ -186,15 +186,6 @@ public:
 		, float SphereRadius1
 		, const Vector3<T>& SphereCenter2
 		, float SphereRadius2);
-	
-	// TODO: Intersection of Two Planes
-	//template<typename T>
-	//static Vector3<T> DoTwoPlanesIntersect(
-	//	  const Vector3<T>& PlaneNormal1	// must be normalized first
-	//	, float PlaneD1						// p*PlaneNormal = PlaneD1
-	//	, const Vector3<T>& PlaneNormal2	// must be normalized first
-	//	, float PlaneD2						// p*PlaneNormal2 = PlaneD2	
-	//	, const Vector3<T>& Point) const;	// p 
 		
 	// Intersection of Three Planes
 	template<typename T>
@@ -216,14 +207,14 @@ public:
 	template<typename T>
 	static Vector3<T> SolveReflectionVector(
 		  const Vector3<T>& SurfaceNormal
-		, const Vector3<T>& LightDirection) noexcept;
+		, const Vector3<T>& LightDelta);
 		
 	// Barycentric Coordinates of Triangle in 3D
 	template<typename T>
 	static Vector3<T> SolveBarycentricCoordinates3D(
 		  const Vector3<T> Vertices[3]		// vertices of the triangle
 		, const Vector3<T>& Point			// p
-		, float Barycentric[3]) noexcept;	// barycentric coordinates
+		, float Barycentric[3]);			// barycentric coordinates
 		
 protected:
 
@@ -247,13 +238,16 @@ protected:
 template<typename T>
 inline static Vector3<T> UGeometricTestLibrary::ClosestPointInAABB(
 	  const Vector3<T>& Point	// q
-	, const AABB<T>& AABB_Ref) noexcept
+	, const AABB<T>& AABB_Ref) 
 {
 	Vector3<T> Result = Vector3<T>::ZeroVector;
 				
 	// Print q
 	GEngine->AddOnScreenDebugMessage(1, 30.f, FColor::Red, TEXT("\nPoint q is..."));
-	GEngine->AddOnScreenDebugMessage(2, 30.f, FColor::Red, FString::Printf(TEXT("X: %f, Y: %f, Z: %f\n"), Point.X, Point.Y, Point.Z));
+	GEngine->AddOnScreenDebugMessage(
+		  2, 30.f, FColor::Red
+		, FString::Printf(TEXT("X: %f, Y: %f, Z: %f\n")
+		, Point.X, Point.Y, Point.Z));
 
 	// Solve by "pushing" q onto B along each axis
 	if (Point.X < AABB_Ref.GetMin().X)		Result.X = (T)AABB_Ref.GetMin().X;
@@ -267,7 +261,10 @@ inline static Vector3<T> UGeometricTestLibrary::ClosestPointInAABB(
 	
 	// Print Result
 	GEngine->AddOnScreenDebugMessage(3, 30.f, FColor::Red, TEXT("Closest point in AABB is..."));
-	GEngine->AddOnScreenDebugMessage(4, 30.f, FColor::Red, FString::Printf(TEXT("X: %f, Y: %f, Z: %f\n"), Result.X, Result.Y, Result.Z));
+	GEngine->AddOnScreenDebugMessage(
+		  4, 30.f, FColor::Red
+		, FString::Printf(TEXT("X: %f, Y: %f, Z: %f\n")
+		, Result.X, Result.Y, Result.Z));
 	
 	// If Result is already inside the box, this returns the original point
 	return Result;
@@ -286,23 +283,26 @@ inline static Vector3<T> UGeometricTestLibrary::ClosestPointInAABB(
  *
  * q = given point
  * p0 = ray origin
- * Ď = normalized ray direction vector, a.k.a. unit vector
+ * Ď = normalized ray delta vector, a.k.a. unit vector
  * v = q - p0
 */
 template<typename T>
 inline static Vector3<T> UGeometricTestLibrary::ClosestPointOnRay(
-	  const Vector3<T>& Point					// q
-	, const Vector3<T>& RayOrigin				// p0
-	, const Vector3<T>& RayDirection) noexcept	// D (unnormalized)
+	  const Vector3<T>& Point			// q
+	, const Vector3<T>& RayOrigin		// p0
+	, const Vector3<T>& RayDelta)		// D (unnormalized)
 {
 	Vector3<T> Result = Vector3<T>::ZeroVector;
 
 	// Print q
 	GEngine->AddOnScreenDebugMessage(1, 30.f, FColor::Red, TEXT("\nPoint q is..."));
-	GEngine->AddOnScreenDebugMessage(2, 30.f, FColor::Red, FString::Printf(TEXT("X: %f, Y: %f, Z: %f\n"), Point.X, Point.Y, Point.Z));
+	GEngine->AddOnScreenDebugMessage(
+		  2, 30.f, FColor::Red
+		, FString::Printf(TEXT("X: %f, Y: %f, Z: %f\n")
+		, Point.X, Point.Y, Point.Z));
 	
 	// Solve Ď
-	Vector3<T> D = MyMathLibrary::Normalize(RayDirection);
+	Vector3<T> D = MyMathLibrary::Normalize(RayDelta);
 	
 	// Solve v = q - p0
 	Vector3<T> v = Point - RayOrigin;
@@ -318,13 +318,18 @@ inline static Vector3<T> UGeometricTestLibrary::ClosestPointOnRay(
 	// be the ray origin (if t < 0) or endpoint (if t > length of ray)
 	if (t < 0)
 	{
-		GEngine->AddOnScreenDebugMessage(3, 30.f, FColor::Red, TEXT("\nResult not within the ray! Closest point is ray origin!, GeometricTestLibrary.h:321\n"));
+		GEngine->AddOnScreenDebugMessage(
+			  3, 30.f, FColor::Red
+			, TEXT("\nResult not within the ray! Closest point is ray origin!, GeometricTestLibrary.h:323\n"));
+
 		return Result;
 	}
-	
-	if (t > R.Magnitude()) // t > length of ray
+	else if (t > R.Magnitude()) // t > length of ray
 	{
-		GEngine->AddOnScreenDebugMessage(4, 30.f, FColor::Red, TEXT("\nResult not within the ray! Closest point is the endpoint!, GeometricTestLibrary.h:327\n"));
+		GEngine->AddOnScreenDebugMessage(
+			  4, 30.f, FColor::Red
+			, TEXT("\nResult not within the ray! Closest point is the endpoint!, GeometricTestLibrary.h:331\n"));
+
 		return Result;
 	}
 		
@@ -333,7 +338,10 @@ inline static Vector3<T> UGeometricTestLibrary::ClosestPointOnRay(
 
 	// Print q`
 	GEngine->AddOnScreenDebugMessage(5, 30.f, FColor::Red, TEXT("\nClosest point to q is..."));
-	GEngine->AddOnScreenDebugMessage(6, 30.f, FColor::Red, FString::Printf(TEXT("X: %f, Y: %f, Z: %f\n"), Result.X, Result.Y, Result.Z));
+	GEngine->AddOnScreenDebugMessage(
+		  6, 30.f, FColor::Red
+		, FString::Printf(TEXT("X: %f, Y: %f, Z: %f\n")
+		, Result.X, Result.Y, Result.Z));
 	
 	// Return closest point on parametic ray
 	return Result;
@@ -357,20 +365,23 @@ inline static Vector3<T> UGeometricTestLibrary::ClosestPointOnRay(
 */
 template<typename T>
 inline static Vector3<T> UGeometricTestLibrary::ClosestPointOnPlane(
-	  const Vector3<T>& Point				// q
-	, const Vector3<T>& PlaneNormal 		// n (unnormalized)
-	, float PlaneD)	noexcept				// p*PlaneNormal = PlaneD			
+	  const Vector3<T>& Point			// q
+	, const Vector3<T>& PlaneNormal		// n (unnormalized)
+	, float PlaneD)						// p*PlaneNormal = PlaneD			
 {
 	Vector3<T> Result = Vector3<T>::ZeroVector;
 
 	// Print q
 	GEngine->AddOnScreenDebugMessage(1, 30.f, FColor::Red, TEXT("Point q is..."));
-	GEngine->AddOnScreenDebugMessage(2, 30.f, FColor::Red, FString::Printf(TEXT("X: %f, Y: %f, Z: %f\n"), Point.X, Point.Y, Point.Z));
+	GEngine->AddOnScreenDebugMessage(
+		  2, 30.f, FColor::Red
+		, FString::Printf(TEXT("X: %f, Y: %f, Z: %f\n")
+		, Point.X, Point.Y, Point.Z));
 	
 	// Solve ň
 	Vector3<T> NormalizedPlaneNormal = MyMathLibrary::Normalize(PlaneNormal);
 	
-	// Solve q - d
+	// Solve q - d, flipping sign of d
 	Vector3<T> Diff = Point - PlaneD;
 
 	// Solve q - d * ň, with inverse dot product
@@ -387,7 +398,10 @@ inline static Vector3<T> UGeometricTestLibrary::ClosestPointOnPlane(
 	
 	// Print q`
 	GEngine->AddOnScreenDebugMessage(3, 30.f, FColor::Red, TEXT("Closest Point to q is..."));
-	GEngine->AddOnScreenDebugMessage(4, 30.f, FColor::Red, FString::Printf(TEXT("X: %f, Y: %f, Z: %f\n"), Result.X, Result.Y, Result.Z));
+	GEngine->AddOnScreenDebugMessage(
+		  4, 30.f, FColor::Red
+		, FString::Printf(TEXT("X: %f, Y: %f, Z: %f\n")
+		, Result.X, Result.Y, Result.Z));
 	
 	// Return closest point on plane
 	return Result;
@@ -413,13 +427,16 @@ template<typename T>
 inline static Vector3<T> UGeometricTestLibrary::ClosestPointOnSphere(
 	  const Vector3<T>& Point			// q
 	, const Vector3<T>& SphereCenter	// c
-	, float SphereRadius) noexcept		// r
+	, float SphereRadius)				// r
 {
 	Vector3<T> Result = Vector3<T>::ZeroVector;
 
 	// Print q
 	GEngine->AddOnScreenDebugMessage(1, 30.f, FColor::Red, TEXT("\nPoint q is..."));
-	GEngine->AddOnScreenDebugMessage(2, 30.f, FColor::Red, FString::Printf(TEXT("X: %f, Y: %f, Z: %f\n"), Point.X, Point.Y, Point.Z));
+	GEngine->AddOnScreenDebugMessage(
+		  2, 30.f, FColor::Red
+		, FString::Printf(TEXT("X: %f, Y: %f, Z: %f\n")
+		, Point.X, Point.Y, Point.Z));
 		
 	// Solve d = c - q
 	Vector3<T> d = SphereCenter - Point; 
@@ -430,7 +447,10 @@ inline static Vector3<T> UGeometricTestLibrary::ClosestPointOnSphere(
 	// If ||d|| < r, then q is inside the sphere
 	if (dMag < SphereRadius)
 	{
-		GEngine->AddOnScreenDebugMessage(3, 30.f, FColor::Red, TEXT("\nFailure! Point q is inside circle!, GeometricTestLibrary.h:433"));
+		GEngine->AddOnScreenDebugMessage(
+			  3, 30.f, FColor::Red
+			, TEXT("\nFailure! Point q is inside circle!, GeometricTestLibrary.h:452"));
+
 		return Result;
 	}
 
@@ -445,7 +465,10 @@ inline static Vector3<T> UGeometricTestLibrary::ClosestPointOnSphere(
 		
 	// Print q`
 	GEngine->AddOnScreenDebugMessage(4, 30.f, FColor::Red, TEXT("\nClosest Point to q is..."));
-	GEngine->AddOnScreenDebugMessage(5, 30.f, FColor::Red, FString::Printf(TEXT("X: %f, Y: %f, Z: %f\n"), Result.X, Result.Y, Result.Z));
+	GEngine->AddOnScreenDebugMessage(
+		  5, 30.f, FColor::Red
+		, FString::Printf(TEXT("X: %f, Y: %f, Z: %f\n")
+		, Result.X, Result.Y, Result.Z));
 		
 	// Return closest point on a circle or sphere
 	return Result;
@@ -529,22 +552,22 @@ inline static int UGeometricTestLibrary::DoesAABBPlaneIntersect(
 template<typename T>
 inline static Vector2<T> UGeometricTestLibrary::DoLinesIntersect(
 	  const Vector2<T>& Origin1
-	, const Vector2<T>& Direction1
+	, const Vector2<T>& Delta1
 	, const Vector2<T>& Origin2
-	, const Vector2<T>& Direction2) 
+	, const Vector2<T>& Delta2) 
 {
 	Vector2<T> Result = Vector2<T>::ZeroVector;
 	
 	// Line AB
 	// d1 = a1*x + b1*y
-	const float a1 = Direction1.Y - Origin1.Y;
-	const float b1 = Origin1.X - Direction1.X;
+	const float a1 = Delta1.Y - Origin1.Y;
+	const float b1 = Origin1.X - Delta1.X;
 	const float d1 = a1*(Origin1.X) + b1*(Origin1.Y);
 	
 	// Line CD
 	// d2 = a2*x + b2*y
-	const float a2 = Direction2.Y - Origin2.Y;
-	const float b2 = Origin2.X - Direction2.X;
+	const float a2 = Delta2.Y - Origin2.Y;
+	const float b2 = Origin2.X - Delta2.X;
 	const float d2 = a2*(Origin2.X) + b2*(Origin2.Y);
 		
 	// Solve a1*b2 - a2*b1
@@ -559,14 +582,20 @@ inline static Vector2<T> UGeometricTestLibrary::DoLinesIntersect(
 	// If the lines are coincident, there are an infinite number of solutions
 	if (NumeratorX == 0.f && NumeratorY == 0.f && Determinant == 0.f)
 	{
-		GEngine->AddOnScreenDebugMessage(1, 30.f, FColor::Red, TEXT("\nLines are coincident! Infinte solutions!, GeometricTestLibrary.h:562"));
+		GEngine->AddOnScreenDebugMessage(
+			  1, 30.f, FColor::Red
+			, TEXT("\nLines are coincident! Infinte solutions!, GeometricTestLibrary.h:587"));
+
 		return Result;
 	}
 	
 	// If the denominator of both equations is zero, there are no solutions and no intersection
 	if (Determinant == 0.f)
 	{
-		GEngine->AddOnScreenDebugMessage(2, 30.f, FColor::Red, TEXT("\nLines are parallel! No solutions and no intersection!, GeometricTestLibrary.h:569"));
+		GEngine->AddOnScreenDebugMessage(
+			  2, 30.f, FColor::Red
+			, TEXT("\nLines are parallel! No solutions and no intersection!, GeometricTestLibrary.h:597"));
+
 		return Result;
 	}
 	else
@@ -578,17 +607,23 @@ inline static Vector2<T> UGeometricTestLibrary::DoLinesIntersect(
 		const float y = NumeratorY / Determinant;
 		 
 		// Check if the x and y coordinates are within both lines
-		if (x < std::min(Origin1.X, Direction1.X) || x > std::max(Origin1.X, Direction1.X) ||
-			x < std::min(Origin2.X, Direction2.X) || x > std::max(Origin2.X, Direction2.X))
+		if (x < std::min(Origin1.X, Delta1.X) || x > std::max(Origin1.X, Delta1.X) ||
+			x < std::min(Origin2.X, Delta2.X) || x > std::max(Origin2.X, Delta2.X))
 		{
-			GEngine->AddOnScreenDebugMessage(2, 30.f, FColor::Red, TEXT("\nFAILURE! X coordinates outside of lines!, GeometricTestLibrary.h:584\n"));
+			GEngine->AddOnScreenDebugMessage(
+				  2, 30.f, FColor::Red
+				, TEXT("\nFAILURE! X coordinates outside of lines!, GeometricTestLibrary.h:615\n"));
+
 			return Result;
 		}
 
-		if (y < std::min(Origin1.Y, Direction1.Y) || y > std::max(Origin1.Y, Direction1.Y) ||
-			y < std::min(Origin2.Y, Direction2.Y) || y > std::max(Origin2.Y, Direction2.Y))
+		if (y < std::min(Origin1.Y, Delta1.Y) || y > std::max(Origin1.Y, Delta1.Y) ||
+			y < std::min(Origin2.Y, Delta2.Y) || y > std::max(Origin2.Y, Delta2.Y))
 		{
-			GEngine->AddOnScreenDebugMessage(2, 30.f, FColor::Red, TEXT("\nFAILURE! Y coordinates outside of lines!, GeometricTestLibrary.h:591\n"));
+			GEngine->AddOnScreenDebugMessage(
+				  2, 30.f, FColor::Red
+				, TEXT("\nFAILURE! Y coordinates outside of lines!, GeometricTestLibrary.h:625\n"));
+
 			return Result;
 		}
 
@@ -597,7 +632,10 @@ inline static Vector2<T> UGeometricTestLibrary::DoLinesIntersect(
 	
 	// Print Result
 	GEngine->AddOnScreenDebugMessage(3, 30.f, FColor::Red, TEXT("\nPoint of intersection of two lines is..."));
-	GEngine->AddOnScreenDebugMessage(4, 30.f, FColor::Red, FString::Printf(TEXT("X: %f, Y: %f\n"), Result.X, Result.Y));
+	GEngine->AddOnScreenDebugMessage(
+		  4, 30.f, FColor::Red
+		, FString::Printf(TEXT("X: %f, Y: %f\n")
+		, Result.X, Result.Y));
 
 	// Returns the point of intersection of two lines
 	return Result;
@@ -614,7 +652,7 @@ inline static Vector2<T> UGeometricTestLibrary::DoLinesIntersect(
 template<typename T>
 inline static float UGeometricTestLibrary::DoesRayAABBIntersect(
 	  const Vector3<T>& RayOrigin
-	, const Vector3<T>& RayDirection
+	, const Vector3<T>& RayDelta
 	, const AABB<T>& AABB_Ref
 	, Vector3<T>* ReturnNormal)
 {
@@ -631,9 +669,9 @@ inline static float UGeometricTestLibrary::DoesRayAABBIntersect(
 	{
 		xt = AABB_Ref.GetMin().X - RayOrigin.X;
 		
-		if (xt > RayDirection.X) return NoIntersection;
+		if (xt > RayDelta.X) return NoIntersection;
 		
-		xt /= RayDirection.X;
+		xt /= RayDelta.X;
 		Inside = false;
 		xn = -1.0f;
 	}
@@ -641,9 +679,9 @@ inline static float UGeometricTestLibrary::DoesRayAABBIntersect(
 	{
 		xt = AABB_Ref.GetMax().X - RayOrigin.X;
 		
-		if (xt < RayDirection.X) return NoIntersection;
+		if (xt < RayDelta.X) return NoIntersection;
 		
-		xt /= RayDirection.X;
+		xt /= RayDelta.X;
 		Inside = false;
 		xn = 1.0f;
 	}
@@ -658,9 +696,9 @@ inline static float UGeometricTestLibrary::DoesRayAABBIntersect(
 	{
 		yt = AABB_Ref.GetMin().Y - RayOrigin.Y;
 		
-		if (yt > RayDirection.Y) return NoIntersection;
+		if (yt > RayDelta.Y) return NoIntersection;
 		
-		yt /= RayDirection.Y;
+		yt /= RayDelta.Y;
 		Inside = false;
 		yn = -1.0f;
 	}
@@ -668,9 +706,9 @@ inline static float UGeometricTestLibrary::DoesRayAABBIntersect(
 	{
 		yt = AABB_Ref.GetMax().Y - RayOrigin.Y;
 		
-		if (yt < RayDirection.Y) return NoIntersection;
+		if (yt < RayDelta.Y) return NoIntersection;
 		
-		yt /= RayDirection.Y;
+		yt /= RayDelta.Y;
 		Inside = false;
 		yn = 1.0f;
 	}
@@ -685,9 +723,9 @@ inline static float UGeometricTestLibrary::DoesRayAABBIntersect(
 	{
 		zt = AABB_Ref.GetMin().Z - RayOrigin.Z;
 		
-		if (zt > RayDirection.Z) return NoIntersection;
+		if (zt > RayDelta.Z) return NoIntersection;
 		
-		zt /= RayDirection.Z;
+		zt /= RayDelta.Z;
 		Inside = false;
 		zn = -1.0f;
 	}
@@ -695,9 +733,9 @@ inline static float UGeometricTestLibrary::DoesRayAABBIntersect(
 	{
 		zt = AABB_Ref.GetMax().Z - RayOrigin.Z;
 		
-		if (zt < RayDirection.Z) return NoIntersection;
+		if (zt < RayDelta.Z) return NoIntersection;
 		
-		zt /= RayDirection.Z;
+		zt /= RayDelta.Z;
 		Inside = false;
 		zn = 1.0f;
 	}
@@ -711,7 +749,7 @@ inline static float UGeometricTestLibrary::DoesRayAABBIntersect(
 	{
 		if (ReturnNormal != nullptr)
 		{
-			*ReturnNormal = -RayDirection;
+			*ReturnNormal = -RayDelta;
 			//MyMathLibrary::Normalize(ReturnNormal);
 		}
 		
@@ -738,10 +776,10 @@ inline static float UGeometricTestLibrary::DoesRayAABBIntersect(
 	{
 		case 0:		// intersect with yz plane
 		{
-			float y = RayOrigin.Y + RayDirection.Y * t;
+			float y = RayOrigin.Y + RayDelta.Y * t;
 			if (y < AABB_Ref.GetMin().Y || y > AABB_Ref.GetMax().Y) return NoIntersection;
 			
-			float z = RayOrigin.Z + RayDirection.Z * t;
+			float z = RayOrigin.Z + RayDelta.Z * t;
 			if (z < AABB_Ref.GetMin().Z || z > AABB_Ref.GetMax().Z) return NoIntersection;
 			
 			if (ReturnNormal != nullptr)
@@ -751,10 +789,10 @@ inline static float UGeometricTestLibrary::DoesRayAABBIntersect(
 			
 		case 1:		// intersect with xz plane
 		{
-			float x = RayOrigin.X + RayDirection.X * t;
+			float x = RayOrigin.X + RayDelta.X * t;
 			if (x < AABB_Ref.GetMin().X || x > AABB_Ref.GetMax().X) return NoIntersection;
 			
-			float z = RayOrigin.Z + RayDirection.Z * t;
+			float z = RayOrigin.Z + RayDelta.Z * t;
 			if (z < AABB_Ref.GetMin().Z || z > AABB_Ref.GetMax().Z) return NoIntersection;
 			
 			if (ReturnNormal != nullptr)
@@ -764,10 +802,10 @@ inline static float UGeometricTestLibrary::DoesRayAABBIntersect(
 		
 		case 2:		// intersect with xy plane
 		{
-			float x = RayOrigin.X + RayDirection.X * t;
+			float x = RayOrigin.X + RayDelta.X * t;
 			if (x < AABB_Ref.GetMin().X || x > AABB_Ref.GetMax().X) return NoIntersection;
 			
-			float y = RayOrigin.Y + RayDirection.Y * t;
+			float y = RayOrigin.Y + RayDelta.Y * t;
 			if (y < AABB_Ref.GetMin().Y || y > AABB_Ref.GetMax().Y) return NoIntersection;
 			
 			if (ReturnNormal != nullptr)
@@ -791,13 +829,13 @@ inline static float UGeometricTestLibrary::DoesRayAABBIntersect(
  *
  * p0 = ray origin vector
  * n = surface normal of plane, i.e., cross product of two non-parallel edges of a polygon
- * ň = normalized ray direction vector, a.k.a. unit vector
+ * ň = normalized ray delta vector, a.k.a. unit vector
  * d = p*n, the plane equation, the distance from the plane to a point
 */
 template<typename T>
 inline static bool UGeometricTestLibrary::DoesRayPlaneIntersect(
 	  const Vector3<T>& RayOrigin
-	, const Vector3<T>& RayDirection
+	, const Vector3<T>& RayDelta
 	, const Vector3<T>& SurfaceNormal	// must be normalized
 	, float PlaneD)
 {
@@ -810,19 +848,22 @@ inline static bool UGeometricTestLibrary::DoesRayPlaneIntersect(
 	Vector3<T> Diff = RayOrigin - PlaneD;
 
 	// Solve ň
-	Vector3<T> DirectionNormal = MyMathLibrary::Normalize(RayDirection);
+	Vector3<T> DeltaNormal = MyMathLibrary::Normalize(RayDelta);
 	
 	// Solve numerator (d - p0*n)
 	float numerator = -MyMathLibrary::DotProduct(Diff, NormalizedSurfaceNormal);
 					
 	// Solve ň*n
-	float denominator = MyMathLibrary::DotProduct(DirectionNormal, NormalizedSurfaceNormal);
+	float denominator = MyMathLibrary::DotProduct(DeltaNormal, NormalizedSurfaceNormal);
 	
 	// If denominator is zero, then ray is parallel to the plane
 	// and there is no intersection
 	if (denominator == 0.f)
 	{
-		GEngine->AddOnScreenDebugMessage(1, 30.f, FColor::Red, TEXT("\nRay parallel to plane! No intersection!, GeometricTestLibrary.h:825\n"));
+		GEngine->AddOnScreenDebugMessage(
+			  1, 30.f, FColor::Red
+			, TEXT("\nRay parallel to plane! No intersection!, GeometricTestLibrary.h:865\n"));
+
 		return Result;
 	}
 	
@@ -830,22 +871,28 @@ inline static bool UGeometricTestLibrary::DoesRayPlaneIntersect(
 	float t = numerator / denominator;
 
 	// Solve R, the parametric ray
-	Vector3<T> R = RayOrigin + (DirectionNormal*t);
+	Vector3<T> R = RayOrigin + (DeltaNormal*t);
 	
 	// TODO: Allow intersection only with front of plane (i.e., denominator < 0)
 	// Thus, intersection only if the ray points in a direction opposite 
 	// to the normal of the plane.
 
 	// Return true if t is within range
-	// If t < 0 or t > length of total relative displacement, intersection does not occur
+	// If t < 0 or t > length of ray, intersection does not occur
 	if (t < 0 || t > R.Magnitude())
 	{
-		GEngine->AddOnScreenDebugMessage(1, 30.f, FColor::Red, TEXT("\nFAILURE! No intersection!, GeometricTestLibrary.h:843\n"));
+		GEngine->AddOnScreenDebugMessage(
+			  1, 30.f, FColor::Red
+			, TEXT("\nFAILURE! No intersection!, GeometricTestLibrary.h:886\n"));
+
 		Result = false;
 	}
 	else
 	{
-		GEngine->AddOnScreenDebugMessage(1, 30.f, FColor::Red, TEXT("\nSUCCESS! Ray and Plane intersect!, GeometricTestLibrary.h:848\n"));
+		GEngine->AddOnScreenDebugMessage(
+			  1, 30.f, FColor::Red
+			, TEXT("\nSUCCESS! Ray and Plane intersect!, GeometricTestLibrary.h:894\n"));
+
 		Result = true;
 	}
 
@@ -862,7 +909,7 @@ inline static bool UGeometricTestLibrary::DoesRayPlaneIntersect(
  * Where:
  *
  * a = e * Ď, the length of this vector
- * Ď = normalized ray direction vector, a.k.a. unit vector
+ * Ď = normalized ray delta vector, a.k.a. unit vector
  * p0 = ray origin
  * r = radius of sphere
  * c = center of sphere
@@ -873,12 +920,12 @@ inline static bool UGeometricTestLibrary::DoesRaySphereIntersect(
 	  const Vector3<T>& SphereCenter	
 	, float SphereRadius					
 	, const Vector3<T>& RayOrigin
-	, const Vector3<T>& RayDirection)
+	, const Vector3<T>& RayDelta)
 {
 	bool Result = false;
 	
 	// Solve Ď
-	Vector3<T> D = MyMathLibrary::Normalize(RayDirection);
+	Vector3<T> D = MyMathLibrary::Normalize(RayDelta);
 	
 	// Solve e, e^2
 	Vector3<T> e = SphereCenter - RayOrigin;
@@ -890,7 +937,10 @@ inline static bool UGeometricTestLibrary::DoesRaySphereIntersect(
 	// if e^2 < r^2, the ray origin is inside the sphere
 	if (e2 < r2)
 	{
-		GEngine->AddOnScreenDebugMessage(1, 30.f, FColor::Red, TEXT("Intersection at point of ray origin!, GeometricTestLibrary.h:893"));
+		GEngine->AddOnScreenDebugMessage(
+			  1, 30.f, FColor::Red
+			, TEXT("Intersection at point of ray origin!, GeometricTestLibrary.h:942"));
+
 		Result = true;
 		return Result;
 	}
@@ -907,7 +957,10 @@ inline static bool UGeometricTestLibrary::DoesRaySphereIntersect(
 	// then the ray does not intersect.
 	if (SqrtVal < 0.f)
 	{
-		GEngine->AddOnScreenDebugMessage(2, 30.f, FColor::Red, TEXT("\nFAILURE! No intersection!, Square root value is negative!, GeometricTestLibrary.h:910\n"));
+		GEngine->AddOnScreenDebugMessage(
+			  2, 30.f, FColor::Red
+			, TEXT("\nFAILURE! No intersection!, Square root value is negative!, GeometricTestLibrary.h:962\n"));
+
 		return Result;
 	}
 	
@@ -920,12 +973,18 @@ inline static bool UGeometricTestLibrary::DoesRaySphereIntersect(
 	// If t < 0 or t > length of ray, intersection does not occur
 	if (t < 0.f || t > R.Magnitude())
 	{
-		GEngine->AddOnScreenDebugMessage(3, 30.f, FColor::Red, TEXT("\nFAILURE! No intersection!, GeometricTestLibrary.h:923\n"));
+		GEngine->AddOnScreenDebugMessage(
+			  3, 30.f, FColor::Red
+			, TEXT("\nFAILURE! No intersection!, GeometricTestLibrary.h:978\n"));
+
 		Result = false;
 	}
 	else
 	{
-		GEngine->AddOnScreenDebugMessage(4, 30.f, FColor::Red, TEXT("\nSUCCESS! Ray and sphere intersected at t = 0!, GeometricTestLibrary.h:928\n"));
+		GEngine->AddOnScreenDebugMessage(
+			  4, 30.f, FColor::Red
+			, TEXT("\nSUCCESS! Ray and sphere intersected at t = 0!, GeometricTestLibrary.h:986\n"));
+
 		Result = true;
 	}
 		
@@ -936,11 +995,11 @@ inline static bool UGeometricTestLibrary::DoesRaySphereIntersect(
 template<typename T>	
 inline static float UGeometricTestLibrary::DoesRayTriangleIntersect(
 	  const Vector3<T>& RayOrigin		// origin of ray
-	, const Vector3<T>& RayDirection	// direction and length of ray
+	, const Vector3<T>& RayDelta		// direction and length of ray
 	, const Vector3<T>& Vertex1			// triangle vertices
 	, const Vector3<T>& Vertex2			// .
 	, const Vector3<T>& Vertex3			// .
-	, float MinT) noexcept				// closest intersection found so far, start at 1.0f
+	, float MinT)						// closest intersection found so far, start at 1.0f
 {
 	const float NoIntersection = FLT_MAX;
 	
@@ -953,7 +1012,7 @@ inline static float UGeometricTestLibrary::DoesRayTriangleIntersect(
 	
 	// Gradient which tells us how steep
 	// of an angle we are approaching the front side of the triangle
-	float dot = MyMathLibrary::DotProduct(n, RayDirection);
+	float dot = MyMathLibrary::DotProduct(n, RayDelta);
 	
 	// Check for a ray that is parallel to the triangle, 
 	// or not pointing towards the front face of the triangle.
@@ -989,7 +1048,7 @@ inline static float UGeometricTestLibrary::DoesRayTriangleIntersect(
 	check(t >= 0.0f && t <= MinT);	// "check" is from UE4. In C++, use "assert".
 	
 	// 3D point of intersection
-	Vector3<T> p = RayOrigin + RayDirection * t;
+	Vector3<T> p = RayOrigin + RayDelta * t;
 	
 	// Dominant axis to select which plane to project onto
 	float u0, u1, u2;
@@ -1081,8 +1140,8 @@ inline static float UGeometricTestLibrary::DoesRayTriangleIntersect(
  * 
  * x = cross product
  * p1, p2 = origin vectors
- * d1, d2 = direction vectors
- * ||d1 x d2||^2 = the magnitude of the cross product of the direction vectors, squared
+ * d1, d2 = delta vectors
+ * ||d1 x d2||^2 = the magnitude of the cross product of the delta vectors, squared
  *
  * NOTE: the range of t1 and t2 is not restricted.
  *
@@ -1093,21 +1152,21 @@ inline static float UGeometricTestLibrary::DoesRayTriangleIntersect(
 template<typename T>
 inline static bool UGeometricTestLibrary::DoRaysIntersect(
 	  const Vector3<T>& RayOrigin1				// p1
-	, const Vector3<T>& RayDirection1			// d1
+	, const Vector3<T>& RayDelta1				// d1
 	, const Vector3<T>& RayOrigin2				// p2
-	, const Vector3<T>& RayDirection2)			// d2
+	, const Vector3<T>& RayDelta2)				// d2
 {
 	// Solve p2 - p1
 	Vector3<T> OriginDistance = RayOrigin2 - RayOrigin1;
 	
 	// Solve ((p2 - p1) x d2)
-	Vector3<T> CrossProdT1 = MyMathLibrary::CrossProduct(OriginDistance, RayDirection2);
+	Vector3<T> CrossProdT1 = MyMathLibrary::CrossProduct(OriginDistance, RayDelta2);
 		
 	// Solve ((p2 - p1) x d1)
-	Vector3<T> CrossProdT2 = MyMathLibrary::CrossProduct(OriginDistance, RayDirection1);
+	Vector3<T> CrossProdT2 = MyMathLibrary::CrossProduct(OriginDistance, RayDelta1);
 	
 	// Solve ||d1 x d2||^2
-	Vector3<T> CrossProdDirs = MyMathLibrary::CrossProduct(RayDirection1, RayDirection2);
+	Vector3<T> CrossProdDirs = MyMathLibrary::CrossProduct(RayDelta1, RayDelta2);
 	float CrossProdMagnitude = CrossProdDirs.Magnitude();
 	float Denominator = pow(CrossProdMagnitude, 2);
 	
@@ -1121,7 +1180,10 @@ inline static bool UGeometricTestLibrary::DoRaysIntersect(
 	// All numerators and denominators are zero in this case
 	if (Numerator1 == 0.f && Numerator2 == 0.f && Denominator == 0.f)
 	{
-		GEngine->AddOnScreenDebugMessage(1, 30.f, FColor::Red, TEXT("\nRays are coincident! Infinite number of solutions!, GeometricTestLibrary.h:1124"));
+		GEngine->AddOnScreenDebugMessage(
+			  1, 30.f, FColor::Red
+			, TEXT("\nRays are coincident! Infinite number of solutions!, GeometricTestLibrary.h:1185"));
+		
 		return false;
 	}
 	
@@ -1129,7 +1191,10 @@ inline static bool UGeometricTestLibrary::DoRaysIntersect(
 	// Therefore, the denominator of both equations is zero
 	if (Denominator == 0.f)
 	{
-		GEngine->AddOnScreenDebugMessage(2, 30.f, FColor::Red, TEXT("\nRays are parallel! No solutions and no intersection!, GeometricTestLibrary.h:1132"));
+		GEngine->AddOnScreenDebugMessage(
+			  2, 30.f, FColor::Red
+			, TEXT("\nRays are parallel! No solutions and no intersection!, GeometricTestLibrary.h:1196"));
+
 		return false;
 	}
 		
@@ -1140,8 +1205,8 @@ inline static bool UGeometricTestLibrary::DoRaysIntersect(
 	float t2 = Numerator2 / Denominator;
 	
 	// Solve R1, R2
-	Vector3<T> R1 = RayOrigin1 + (RayDirection1*t1);
-	Vector3<T> R2 = RayOrigin2 + (RayDirection2*t2);
+	Vector3<T> R1 = RayOrigin1 + (RayDelta1*t1);
+	Vector3<T> R2 = RayOrigin2 + (RayDelta2*t2);
 
 	// TODO: Solve skew lines by examining distance between t1 and t2
 					
@@ -1161,15 +1226,18 @@ inline static bool UGeometricTestLibrary::DoRaysIntersect(
  * d = p*ň, the plane equation, the distance from the plane to a point
  * c = center of sphere
  * r = radius of sphere
- * Ď = normalized direction vector, a.k.a. unit vector
+ * Ď = normalized delta vector, a.k.a. unit vector
  * ň = normalized surface normal of plane
- * c*ň + r = point of contact
+ * c - r*ň = point of contact
+ * c + t*Ď = motion of the center of the sphere
+ *
+ * NOTE: We are flipping d - c, using the inverse dot product to get signed distance
 */
 template<typename T>
 inline static bool UGeometricTestLibrary::DoesSpherePlaneIntersect_Dynamic(
 	  const Vector3<T>& PlaneNormal			// must be normalized first
 	, float PlaneD
-	, const Vector3<T>& SphereDirectionVector
+	, const Vector3<T>& SphereDeltaVector
 	, const Vector3<T>& SphereCenter
 	, float SphereRadius)
 {
@@ -1179,33 +1247,40 @@ inline static bool UGeometricTestLibrary::DoesSpherePlaneIntersect_Dynamic(
 	// Solve d - c
 	Vector3<T> Diff = SphereCenter - PlaneD;
 
-	// Solve d - c*ň
+	// Solve d - c*ň, flipped
 	float Dot = -MyMathLibrary::DotProduct(Diff, NormalizedPlaneNormal);
 
 	// Solve Ď
-	Vector3<T> DirectionNormal = MyMathLibrary::Normalize(SphereDirectionVector);
+	Vector3<T> DeltaNormal = MyMathLibrary::Normalize(SphereDeltaVector);
 
 	// Solve Ď*ň
-	float Denominator = MyMathLibrary::DotProduct(DirectionNormal, NormalizedPlaneNormal);
+	float Denominator = MyMathLibrary::DotProduct(DeltaNormal, NormalizedPlaneNormal);
 
+	// If Denominator is zero, there is no intersection
 	if (Denominator == 0.f)
 		return false;
 
 	// Solve t = d - c*ň + r \ Ď*ň
 	float t = (Dot + SphereRadius) / Denominator;
 
-	// Solve l
-	Vector3<T> l = SphereCenter + (DirectionNormal*t);
+	// Solve l, the motion of the sphere
+	Vector3<T> l = SphereCenter + (DeltaNormal*t);
 
-	// If t < 0 or t > length of total relative displacement, intersection does not occur
+	// If t < 0 or t > length of total relative displacement of sphere, intersection does not occur
 	if (t < 0 || t > l.Magnitude())
 	{
-		GEngine->AddOnScreenDebugMessage(-1, 30.f, FColor::Red, TEXT("\nNo intersection!, GeometricTestLibrary.h:1203\n"));
+		GEngine->AddOnScreenDebugMessage(
+			  -1, 30.f, FColor::Red
+			, TEXT("\nNo intersection!, GeometricTestLibrary.h:1274\n"));
+
 		return false;
 	}
 	else
 	{
-		GEngine->AddOnScreenDebugMessage(-1, 30.f, FColor::Red, TEXT("\nSUCCESS! Sphere and plane intersect during time in question!, GeometricTestLibrary.h:1208\n"));
+		GEngine->AddOnScreenDebugMessage(
+			  -1, 30.f, FColor::Red
+			, TEXT("\nSUCCESS! Sphere and plane intersect during time in question!, GeometricTestLibrary.h:1282\n"));
+
 		return true;
 	}
 }
@@ -1262,8 +1337,8 @@ inline static int UGeometricTestLibrary::DoesSpherePlaneIntersect_Static(
  *
  * Where:
  *
- * Ď = normalized direction vector 
- * D = moving direction vector - stationary direction vector
+ * Ď = normalized delta vector 
+ * D = moving delta vector - stationary delta vector
  * e = stationary sphere center - moving sphere center 
  * ||e|| = magnitude of e
  * r = sum of the sphere radii
@@ -1274,8 +1349,8 @@ inline static int UGeometricTestLibrary::DoesSpherePlaneIntersect_Static(
 */
 template<typename T>
 inline static bool UGeometricTestLibrary::DoSpheresIntersect_Dynamic(
-	  const Vector3<T>& StationaryDirectionVector
-	, const Vector3<T>& MovingDirectionVector
+	  const Vector3<T>& StationaryDeltaVector
+	, const Vector3<T>& MovingDeltaVector
 	, const Vector3<T>& StationarySphereCenter
 	, const Vector3<T>& MovingSphereCenter		// Defined at t = 0
 	, float StationarySphereRadius
@@ -1284,7 +1359,7 @@ inline static bool UGeometricTestLibrary::DoSpheresIntersect_Dynamic(
 	bool Result = false;
 	
 	// Solve D, Ď
-	Vector3<T> D = MovingDirectionVector - StationaryDirectionVector;
+	Vector3<T> D = MovingDeltaVector - StationaryDeltaVector;
 	Vector3<T> NormalizedD = MyMathLibrary::Normalize(D);
 	
 	// Solve e, ||e||
@@ -1309,20 +1384,26 @@ inline static bool UGeometricTestLibrary::DoSpheresIntersect_Dynamic(
 	// If the square root argument is negative, there is no intersection
 	if (SqrtVal < 0.f)
 	{
-		GEngine->AddOnScreenDebugMessage(1, 30.f, FColor::Red, TEXT("\nFAILURE! No intersection! Square root value is negative!, GeometricTestLibrary.h:1312\n"));
+		GEngine->AddOnScreenDebugMessage(
+			  1, 30.f, FColor::Red
+			, TEXT("\nFAILURE! No intersection! Square root value is negative!, GeometricTestLibrary.h:1389\n"));
+
 		Result = false;
 	}
 	
 	// Solve t
 	float t = LHS - RHS;
 
-	// Solve l, the total relative displacement
+	// Solve l, the position of the center of moving sphere at time t
 	Vector3<T> l = MovingSphereCenter + (NormalizedD*t);
 	
-	// If t < 0 or t > length of total relative displacement, intersection does not occur
+	// If t < 0 or t > length of total relative displacement of spheres, intersection does not occur
 	if (t < 0.f || t > l.Magnitude())
 	{
-		GEngine->AddOnScreenDebugMessage(2, 30.f, FColor::Red, TEXT("\nFAILURE! No intersection!, GeometricTestLibrary.h:1325\n"));
+		GEngine->AddOnScreenDebugMessage(
+			  2, 30.f, FColor::Red
+			, TEXT("\nFAILURE! No intersection!, GeometricTestLibrary.h:1405\n"));
+
 		Result = false;
 	}
 	else
@@ -1330,7 +1411,10 @@ inline static bool UGeometricTestLibrary::DoSpheresIntersect_Dynamic(
 		// If ||e|| < r, then the spheres are intersecting at t = 0 during the time in question
 		if (eMag < r)
 		{
-			GEngine->AddOnScreenDebugMessage(3, 30.f, FColor::Red, TEXT("\nSUCCESS! Spheres intersected at t = 0!, GeometricTestLibrary.h:1333\n"));
+			GEngine->AddOnScreenDebugMessage(
+				  3, 30.f, FColor::Red
+				, TEXT("\nSUCCESS! Spheres intersected at t = 0!, GeometricTestLibrary.h:1416\n"));
+
 			Result = true;
 		}
 	}
@@ -1366,12 +1450,18 @@ inline static bool UGeometricTestLibrary::DoSpheresIntersect_Static(
 	// Solve d^2 < (r1 + r2)^2
 	if (DistanceSquared < RadiiSquared)
 	{
-		GEngine->AddOnScreenDebugMessage(1, 30.f, FColor::Red, TEXT("\nSUCCESS! Spheres intersect!, GeometricTestLibrary.h:1369\n"));
+		GEngine->AddOnScreenDebugMessage(
+			  1, 30.f, FColor::Red
+			, TEXT("\nSUCCESS! Spheres intersect!, GeometricTestLibrary.h:1455\n"));
+
 		return true;
 	}
 	else
 	{
-		GEngine->AddOnScreenDebugMessage(2, 30.f, FColor::Red, TEXT("\nFAILURE! Spheres do not intersect!, GeometricTestLibrary.h:1374\n"));
+		GEngine->AddOnScreenDebugMessage(
+			  2, 30.f, FColor::Red
+			, TEXT("\nFAILURE! Spheres do not intersect!, GeometricTestLibrary.h:1463\n"));
+
 		return false;
 	}	
 }
@@ -1434,7 +1524,10 @@ inline static Vector3<T> UGeometricTestLibrary::PointOfIntersection(
 	// the equation will be zero in this case.
 	if (Denominator == 0.f)
 	{
-		GEngine->AddOnScreenDebugMessage(1, 30.f, FColor::Red, TEXT("\nFAILURE! A pair of planes are parallel! No intersection!, GeometricTestLibrary.h:1437"));
+		GEngine->AddOnScreenDebugMessage(
+			  1, 30.f, FColor::Red
+			, TEXT("\nFAILURE! A pair of planes are parallel! No intersection!, GeometricTestLibrary.h:1529"));
+
 		return Result;
 	}
 
@@ -1443,7 +1536,10 @@ inline static Vector3<T> UGeometricTestLibrary::PointOfIntersection(
 
 	// Print Result
 	GEngine->AddOnScreenDebugMessage(2, 30.f, FColor::Red, TEXT("\nPoint of intersection of three planes is..."));
-	GEngine->AddOnScreenDebugMessage(3, 30.f, FColor::Red, FString::Printf(TEXT("X: %f, Y: %f, Z: %f\n"), Result.X, Result.Y, Result.Z));
+	GEngine->AddOnScreenDebugMessage(
+		  3, 30.f, FColor::Red
+		, FString::Printf(TEXT("X: %f, Y: %f, Z: %f\n")
+		, Result.X, Result.Y, Result.Z));
 	
 	// Return the point of intersection
 	return Result;
@@ -1484,12 +1580,12 @@ inline static bool UGeometricTestLibrary::DoAABBsIntersect(
  *
  * Where:
  * n = normalized surface normal
- * l = normalized direction of light source
+ * l = normalized delta of light source
 */
 template<typename T>
 inline static Vector3<T> UGeometricTestLibrary::SolveReflectionVector(
 	  const Vector3<T>& SurfaceNormal
-	, const Vector3<T>& LightDirection) noexcept
+	, const Vector3<T>& LightDelta) 
 {
 	Vector3<T> Result = Vector3<T>::ZeroVector;
 
@@ -1497,7 +1593,7 @@ inline static Vector3<T> UGeometricTestLibrary::SolveReflectionVector(
 	const Vector3<T> NormalizedSurfaceNormal = MyMathLibrary::Normalize(SurfaceNormal);
 	
 	// Solve l
-	const Vector3<T> LightNormal = MyMathLibrary::Normalize(LightDirection);
+	const Vector3<T> LightNormal = MyMathLibrary::Normalize(LightDelta);
 	
 	// Solve 2(n * l)
 	float Dot = 2 * MyMathLibrary::DotProduct(NormalizedSurfaceNormal, LightNormal);
@@ -1510,7 +1606,10 @@ inline static Vector3<T> UGeometricTestLibrary::SolveReflectionVector(
 	
 	// Print r
 	GEngine->AddOnScreenDebugMessage(1, 30.f, FColor::Red, TEXT("\nReflection vector of l about n is..."));
-	GEngine->AddOnScreenDebugMessage(2, 30.f, FColor::Red, FString::Printf(TEXT("X: %f, Y: %f, Z: %f\n"), Result.X, Result.Y, Result.Z));
+	GEngine->AddOnScreenDebugMessage(
+		  2, 30.f, FColor::Red
+		, FString::Printf(TEXT("X: %f, Y: %f, Z: %f\n")
+		, Result.X, Result.Y, Result.Z));
 	
 	// Return the reflection vector
 	return Result;
@@ -1537,7 +1636,7 @@ template<typename T>
 inline static Vector3<T> UGeometricTestLibrary::SolveBarycentricCoordinates3D(
 	  const Vector3<T> Vertices[3]		// vertices of the triangle
 	, const Vector3<T>& Point			// p
-	, float Barycentric[3])	noexcept	// barycentric coordinates
+	, float Barycentric[3])				// barycentric coordinates
 {
 	Vector3<T> Result = Vector3<T>::ZeroVector;
 	
@@ -1598,7 +1697,10 @@ inline static Vector3<T> UGeometricTestLibrary::SolveBarycentricCoordinates3D(
 	// If denominator is zero, there are no coordinates because the triangle has zero area
 	if (Denominator == 0.f)
 	{
-		GEngine->AddOnScreenDebugMessage(1, 30.f, FColor::Red, TEXT("\nFAILURE! No coordinates!, GeometricTestLibrary.h:1601\n"));
+		GEngine->AddOnScreenDebugMessage(
+			  1, 30.f, FColor::Red
+			, TEXT("\nFAILURE! No coordinates!, GeometricTestLibrary.h:1702\n"));
+
 		return Result;
 	}
 	
@@ -1612,7 +1714,10 @@ inline static Vector3<T> UGeometricTestLibrary::SolveBarycentricCoordinates3D(
 	
 	// Print Result
 	GEngine->AddOnScreenDebugMessage(2, 30.f, FColor::Red, TEXT("\nBarycentric coordinates of triangle are..."));
-	GEngine->AddOnScreenDebugMessage(3, 30.f, FColor::Red, FString::Printf(TEXT("X: %f, Y: %f, Z: %f\n"), Result.X, Result.Y, Result.Z));
+	GEngine->AddOnScreenDebugMessage(
+		  3, 30.f, FColor::Red
+		, FString::Printf(TEXT("X: %f, Y: %f, Z: %f\n")
+		, Result.X, Result.Y, Result.Z));
 	
 	// Return barycentric coordinates of triangle
 	return Result;

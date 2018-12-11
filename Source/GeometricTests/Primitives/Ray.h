@@ -21,12 +21,16 @@
 /*
  * Ray.h
  *
+ * A ray is a directed line segment defined by:
+ *
  * p(t) = p0 + t*d
  *
  * Where:
  *
  * p0 = ray origin vector
- * d = ray direction vector
+ * d = delta vector, which contains length and direction
+ *
+ * t is restricted to normalized range [0, 1]
 */
 template<typename T>
 struct Ray
@@ -34,30 +38,48 @@ struct Ray
 	
 public:
 
-	explicit Ray<T>(
+	// Constructor: No Arguments
+	inline explicit Ray<T>() :
+		  Origin(Vector3<T>::ZeroVector)
+		, Delta(Vector3<T>::ZeroVector)
+	{}
+
+	// Constructor: Passing Origin and Delta
+	inline explicit Ray<T>(
 		  const Vector3<T>& _Origin
-		, const Vector3<T>& _Direction) : 
+		, const Vector3<T>& _Delta) : 
 		  Origin(_Origin)
-		, Direction(_Direction)
+		, Delta(_Delta)
 	{}
 		
-	~Ray() = default;
+	// Destructor
+	~Ray<T>() = default;
 
-	// No copy or move
-	Ray(Ray const&) = delete;
-	Ray& operator=(const Ray&) = delete;
-	Ray(Ray&&) = delete;
-	Ray& operator=(Ray&&) = delete;
+	// Copy Constructor
+	Ray<T>(Ray<T> const&) = delete;
+
+	// Copy-Assignment Operator
+	Ray<T>& operator=(const Ray<T>&) = delete;
+
+	// Move Constructor
+	Ray<T>(Ray<T>&&) = delete;
+
+	// Move-Assignment Operator
+	Ray<T>& operator=(Ray<T>&&) = delete;
 	
-	inline constexpr Vector3<T> GetOrigin() const noexcept { return Origin; }
-	inline void SetOrigin(const Vector3<T>& _Origin) { return Origin = _Origin; }
-	
-	inline constexpr Vector3<T> GetDirection() const noexcept { return Direction; }
-	inline void SetDirection(const Vector3<T>& _Direction) { return Direction = _Direction; }
+	inline constexpr Vector3<T> GetOrigin() const { return Origin; }
+	inline constexpr Vector3<T> GetDelta() const { return Delta; }
+
+	inline void Set(const Vector3<T>& _Origin, const Vector3<T>& _Delta) 
+	{
+		Origin = _Origin;
+		Delta = _Delta;
+	}
 	
 private:
 	
-	Vector3<T> Origin;		// p0
-	Vector3<T> Direction;	// d
-	
+	//~ Ray Variables
+	Vector3<T> Origin;	// p0
+	Vector3<T> Delta;	// d
+	//~ End Ray Variables
 };

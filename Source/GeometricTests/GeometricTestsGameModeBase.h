@@ -31,6 +31,9 @@ class GEOMETRICTESTS_API AGeometricTestsGameModeBase : public AGameModeBase
 public:
 	
 	AGeometricTestsGameModeBase() = default;
+	~AGeometricTestsGameModeBase() = default;
+	
+	// UE4: UObject copying and moving disabled
 	
 protected:
 

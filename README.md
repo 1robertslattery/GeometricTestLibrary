@@ -41,7 +41,7 @@ These tests are designed to be used with any `C++` application or game engine, h
 
 ### Config
 
-| Files		| Description						|
+| Files	| Description						|
 | ----------------------------- |:-----------------------------------------------------:|
 | `DefaultEditor.ini`		| UE4 Config File				|
 | `DefaultEngine.ini`			| UE4 Config File				|
@@ -49,7 +49,7 @@ These tests are designed to be used with any `C++` application or game engine, h
 
 ### Content/Maps
 
-| Files		| Description						|
+| Files	| Description						|
 | ----------------------------- |:-----------------------------------------------------:|
 | `EmptyLevel.umap`		| UE4 Level				|
 
@@ -63,7 +63,7 @@ These tests are designed to be used with any `C++` application or game engine, h
 
 ### Source/GeometricTests
 
-| Files and Folders				| Description						|
+| Files	and Folders		| Description						|
 | ----------------------------- |:-----------------------------------------------------:|
 | `Math`		| Math Directory			|
 | `Primitives`		| Geometric Primitives Directory			|

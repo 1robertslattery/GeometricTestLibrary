@@ -19,7 +19,6 @@
 #include "CoreMinimal.h"
 #include <cstddef>
 #include <cmath>
-#include <cassert>
 
 /*
  * Vector.h
@@ -36,29 +35,30 @@ struct Vector2
 
 public:
 
-	//~ 2D Vector Data. We will use "float" as our type.
+	//~ 2D Vector Variables. Commonly use 4-byte float or 8-byte double.
 	T X;	// 4 bytes
 	T Y;	// 4 bytes
 	//~ Total Memory Load: 8 bytes
 	
-	explicit Vector2<T>() : X(0), Y(0) {}
+	// Constructor: No Arguments
+	inline explicit Vector2<T>() : X(0), Y(0) {}
 	
-	// Remember to always Pass-by-reference-to-const when you can
-	Vector2<T>(
+	// Constructor: Passing Two Coordinates
+	inline Vector2<T>(
 		  const T& _X
 		, const T& _Y) :
-          X(_X)
+		  X(_X)
 		, Y(_Y)
-    {}
+	{}
 	
-	inline constexpr T GetX() const noexcept { return X; }
-	inline constexpr T GetY() const noexcept { return Y; }
+	inline constexpr T GetX() const { return X; }
+	inline constexpr T GetY() const { return Y; }
 	
 	inline void Set(const T& _X, const T& _Y)
-    {
-        X = _X;
-        Y = _Y;
-    }
+	{
+		X = _X;
+		Y = _Y;
+	}
 	
 	// The magnitude (length) of a vector is the square root of the sum
 	// of the squares of the components of the vector
@@ -69,54 +69,89 @@ public:
 	
 	// Vector Directions
 	static const Vector2<T> ZeroVector;
-    static const Vector2<T> ForwardVector;
-    static const Vector2<T> BackwardVector;
-    static const Vector2<T> RightVector;
-    static const Vector2<T> LeftVector;
+	static const Vector2<T> ForwardVector;
+	static const Vector2<T> BackwardVector;
+	static const Vector2<T> RightVector;
+	static const Vector2<T> LeftVector;
 	
 	//~ Begin Operator Overloads
 	bool operator==(const Vector2<T>& Other) const
-    {
-        return (X == Other.X 
+	{
+		return (X == Other.X 
 			 && Y == Other.Y);
-    }
+	}
 
-    bool operator!=(const Vector2<T>& Other) const
-    {
-        return (X != Other.X
- 		     || Y != Other.Y);
-    }
+	bool operator!=(const Vector2<T>& Other) const
+	{
+		return (X != Other.X
+			 || Y != Other.Y);
+	}
 
-    bool operator<(const Vector2<T>& Other) const
-    {
-        if (X != Other.X) return X < Other.X;
-        else if (Y != Other.Y) return Y < Other.Y;
-        else return false;
-    }
-	
+	bool operator<(const Vector2<T>& Other) const
+	{
+		if (X != Other.X) return X < Other.X;
+		else if (Y != Other.Y) return Y < Other.Y;
+		else return false;
+	}
+
 	bool operator>(const Vector2<T>& Other) const
-    {
-        if (X != Other.X) return X > Other.X;
-        else if (Y != Other.Y) return Y > Other.Y;
-        else return false;
-    }
-		
-	T& operator[](int Index);
-	T operator[](int Index) const;
-	Vector2<T> operator-() const;
-	Vector2<T> operator*(T Scalar) const;
-	Vector2<T> operator*(const Vector2<T>& Other) const;
-	Vector2<T> operator*=(T Scalar) const;
-	Vector2<T> operator*=(const Vector2<T>& Other) const;
+	{
+		if (X != Other.X) return X > Other.X;
+		else if (Y != Other.Y) return Y > Other.Y;
+		else return false;
+	}
+
+	inline T& operator[](int Index)
+	{
+		check(Index >= 0 && Index < 2);	// In C++, use "assert".
+		if (Index == 0) return X;
+		else return Y;
+	}
+
+	inline T operator[](int Index) const
+	{
+		check(Index >= 0 && Index < 2); // In C++, use "assert".
+		if (Index == 0) return X;
+		else return Y;
+	}
+
+	inline Vector2<T> operator-() const
+	{
+		return{ -X, -Y };
+	}
+
+	inline Vector2<T> operator*(T Scalar) const
+	{
+		return Vector2<T>(X * Scalar, Y * Scalar);
+	}
+
+	inline Vector2<T> operator*(const Vector2<T>& Other) const
+	{
+		return Vector2<T>(X * Other.X, Y * Other.Y);
+	}
+
+	inline Vector2<T> operator*=(T Scalar) const
+	{
+		X *= Scalar;
+		Y *= Scalar;
+		return *this;
+	}
+
+	inline Vector2<T> operator*=(const Vector2<T>& Other) const
+	{
+		X *= Other.X;
+		Y *= Other.Y;
+		return *this;
+	}
 	//~ End Operator Overloads
 		
 	// Copy-Assignment Operator returns *this
 	Vector2<T>& operator=(const Vector2<T>& Other) 
-    { 
-        X = Other.X;
-        Y = Other.Y;
-        return *this; 
-    }
+	{ 
+		X = Other.X;
+		Y = Other.Y;
+		return *this; 
+	}
 };
 
 // 3D Vectors
@@ -126,34 +161,35 @@ struct Vector3
 
 public:
 
-	//~ 3D Vector Data. We will use "float" as our type.
+	//~ 3D Vector Variables. Commonly use 4-byte float or 8-byte double.
 	T X;	// 4 bytes
 	T Y;	// 4 bytes
 	T Z;	// 4 bytes
 	//~ Total Memory Load: 12 bytes
 
-	explicit Vector3<T>() : X(0), Y(0), Z(0) {}
+	// Constructor: No Arguments
+	inline explicit Vector3<T>() : X(0), Y(0), Z(0) {}
 	
-	// Remember to always Pass-by-reference-to-const when you can
-	Vector3<T>(
+	// Constructor: Passing Three Coordinates
+	inline Vector3<T>(
 		  const T& _X
 		, const T& _Y
 		, const T& _Z) :
-          X(_X)
+		  X(_X)
 		, Y(_Y)
 		, Z(_Z)
-    {}
+	{}
 	
-	inline constexpr T GetX() const noexcept { return X; }
-	inline constexpr T GetY() const noexcept { return Y; }
-	inline constexpr T GetZ() const noexcept { return Z; }
-	
+	inline constexpr T GetX() const { return X; }
+	inline constexpr T GetY() const { return Y; }
+	inline constexpr T GetZ() const { return Z; }
+
 	inline void Set(const T& _X, const T& _Y, const T& _Z)
-    {
-        X = _X;
-        Y = _Y;
+	{
+		X = _X;
+		Y = _Y;
 		Z = _Z;
-    }
+	}
 	
 	// The magnitude (length) of a vector is the square root of the sum
 	// of the squares of the components of the vector
@@ -165,42 +201,42 @@ public:
 	// Vector Directions
 	static const Vector3<T> ZeroVector;
 	static const Vector3<T> UpVector;
-    static const Vector3<T> DownVector;
-    static const Vector3<T> ForwardVector;
-    static const Vector3<T> BackwardVector;
-    static const Vector3<T> RightVector;
-    static const Vector3<T> LeftVector;
+	static const Vector3<T> DownVector;
+	static const Vector3<T> ForwardVector;
+	static const Vector3<T> BackwardVector;
+	static const Vector3<T> RightVector;
+	static const Vector3<T> LeftVector;
 	
 	//~ Begin Operator Overloads
 	inline bool operator==(const Vector3<T>& Other) const
-    {
-        return (X == Other.X 
+	{
+		return (X == Other.X 
 			 && Y == Other.Y 
 			 && Z == Other.Z);
-    }
+	}
 
-    inline bool operator!=(const Vector3<T>& Other) const
-    {
-        return (X != Other.X
- 		     || Y != Other.Y 
+	inline bool operator!=(const Vector3<T>& Other) const
+	{
+		return (X != Other.X
+			 || Y != Other.Y 
 			 || Z != Other.Z);
-    }
+	}
 
-    inline bool operator<(const Vector3<T>& Other) const
-    {
-        if (X != Other.X) return X < Other.X;
-        else if (Y != Other.Y) return Y < Other.Y;
-        else if (Z != Other.Z) return Z < Other.Z;
-        else return false;
-    }
-	
+	inline bool operator<(const Vector3<T>& Other) const
+	{
+		if (X != Other.X) return X < Other.X;
+		else if (Y != Other.Y) return Y < Other.Y;
+		else if (Z != Other.Z) return Z < Other.Z;
+		else return false;
+	}
+
 	inline bool operator>(const Vector3<T>& Other) const
-    {
-        if (X != Other.X) return X > Other.X;
-        else if (Y != Other.Y) return Y > Other.Y;
-        else if (Z != Other.Z) return Z > Other.Z;
-        else return false;
-    }
+	{
+		if (X != Other.X) return X > Other.X;
+		else if (Y != Other.Y) return Y > Other.Y;
+		else if (Z != Other.Z) return Z > Other.Z;
+		else return false;
+	}
 
 	inline T& operator[](int Index)
 	{
@@ -242,7 +278,7 @@ public:
 	{
 		return Vector3<T>(X - Bias, Y - Bias, Z - Bias);
 	}
-	
+
 	inline Vector3<T> operator*(float Scalar) const
 	{
 		return Vector3<T>(X * Scalar, Y * Scalar, Z * Scalar);
@@ -281,7 +317,7 @@ public:
 	}
 	//~ End Operator Overloads
 		
-	// Copy-Assignment Operator returns *thus
+	// Copy-Assignment Operator returns *this
 	Vector3<T>& operator=(const Vector3<T>& Other) 
     { 
         X = Other.X;
@@ -305,61 +341,10 @@ template<typename T> Vector3<T> const Vector3<T>::BackwardVector = Vector3<T>(0.
 template<typename T> Vector3<T> const Vector3<T>::RightVector = Vector3<T>(1.0, 0.0, 0.0);
 template<typename T> Vector3<T> const Vector3<T>::LeftVector = Vector3<T>(-1.0, 0.0, 0.0);
 
-// 2D
-template <typename T>
-inline T& Vector2<T>::operator[](int Index)
-{
-	check(Index >= 0 && Index < 2);	// In C++, use "assert".
-	if (Index == 0) return X;
-	else return Y;
-}
-
-template <typename T>
-inline T Vector2<T>::operator[](int Index) const
-{
-	check(Index >= 0 && Index < 2); // In C++, use "assert".
-	if (Index == 0) return X;
-	else return Y;
-}
-
-template <typename T>
-inline Vector2<T> Vector2<T>::operator-() const
-{
-    return { -X, -Y };
-}
-
-template <typename T>
-inline Vector2<T> Vector2<T>::operator*(T Scalar) const
-{
-	return Vector3<T>(X * Scalar, Y * Scalar);
-}
-
-template <typename T>
-inline Vector2<T> Vector2<T>::operator*(const Vector2<T>& Other) const
-{
-	return Vector3<T>(X * Other.X, Y * Other.Y);
-}
-
 template<typename T>
 inline Vector2<T> operator*(const Vector2<T>& LHS, T Scalar)
 {
 	return LHS.operator*(Scalar);
-}
-
-template <typename T>
-inline Vector2<T> Vector2<T>::operator*=(T Scalar) const
-{
-	X *= Scalar;
-	Y *= Scalar;
-	return *this;
-}
-
-template <typename T>
-inline Vector2<T> Vector2<T>::operator*=(const Vector2<T>& Other) const
-{
-	X *= Other.X;
-	Y *= Other.Y;
-	return *this;
 }
 
 template<typename T>

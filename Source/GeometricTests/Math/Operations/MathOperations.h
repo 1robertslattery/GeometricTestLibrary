@@ -16,8 +16,7 @@
 
 #pragma once
 
-#include "CoreMinimal.h"
-#include "Math/LinearAlgebra/Vector.h"
+#include "../LinearAlgebra/Vector.h"
 #include <cstddef>
 #include <cmath>
 
@@ -29,7 +28,7 @@
 namespace MyMathLibrary
 {
 	// Solves the dot product of two 3D vectors
-	template <typename T>
+	template<typename T>
 	inline T DotProduct(const Vector3<T>& LHS, const Vector3<T>& RHS, const int Size = 3)
 	{
 		T Result = 0.0;
@@ -41,16 +40,16 @@ namespace MyMathLibrary
 	}
 
 	// Solves the cross product of two 3D vectors
-	template <typename T>
+	template<typename T>
 	inline Vector3<T> CrossProduct(const Vector3<T>& LHS, const Vector3<T>& RHS)
 	{
 		return Vector3<T>(LHS.Y*RHS.Z - LHS.Z*RHS.Y,
-						   LHS.Z*RHS.X - LHS.X*RHS.Z,
-						   LHS.X*RHS.Y - LHS.Y*RHS.X);
+						  LHS.Z*RHS.X - LHS.X*RHS.Z,
+						  LHS.X*RHS.Y - LHS.Y*RHS.X);
 	}
 
 	// Solves the normal of a 3D vector, a.k.a. unit vector
-	template <typename T>
+	template<typename T>
 	inline Vector3<T> Normalize(const Vector3<T>& Vector)
 	{
 		Vector3<T> Result = Vector3<T>::ZeroVector;
@@ -65,11 +64,11 @@ namespace MyMathLibrary
 
 	// 3D Vector Distance Formula
 	template <typename T>
-	inline T Distance(const Vector3<T>& P1, const Vector3<T>& P2)
+	inline T Distance(const Vector3<T>& LHS, const Vector3<T>& RHS)
 	{
-		T DiffX = P1.X - P2.X;
-		T DiffY = P1.Y - P2.Y;
-		T DiffZ = P1.Z - P2.Z;
+		T DiffX = LHS.X - RHS.X;
+		T DiffY = LHS.Y - RHS.Y;
+		T DiffZ = LHS.Z - RHS.Z;
 		return sqrt((pow(DiffX, 2) + pow(DiffY, 2) + pow(DiffZ, 2)));
 	}
 	

@@ -16,7 +16,6 @@
 
 #pragma once
 
-#include "CoreMinimal.h"
 #include "../Math/LinearAlgebra/Vector.h"
 #include "../Math/Operations/MathOperations.h"
 
@@ -25,7 +24,10 @@
  *
  * An infinite surface defined in 3D space by:
  *
- * ax + by + cz + d = 0
+ * Vector Notation: p * n = d
+ * Scalar Notation: ax + by + cz + d = 0
+ * 
+ * n = [a, b, c]
  */
 template<typename T>
 struct Plane
@@ -33,11 +35,13 @@ struct Plane
 
 public:
 	
+	//~ Plane Variables
 	Vector3<T> Normal;
-	float D;		// 4 bytes
-	
+	float D;	// 4 bytes
+	//~ End Plane Variables
+
 	// Constructor: Using 3 vector points
-	explicit Plane<T>(const T& _A, const T& _B, const T& _C, const T& _D)
+	inline explicit Plane<T>(const T& _A, const T& _B, const T& _C, const T& _D)
 	{
 		Normal.X = (T)_A;
         Normal.Y = (T)_B;
@@ -46,17 +50,24 @@ public:
 	}
 	
 	// Constructor: Using a vector point with a vector normal
-	explicit Plane<T>(const Vector3<T>& _Normal, const Vector3<T>& _Point)
+	inline explicit Plane<T>(const Vector3<T>& _Normal, const Vector3<T>& _Point)
 	{
 		Normal = _Normal;
 		D = -MyMathLibrary::DotProduct(_Normal, _Point);
 	}
 	
-	~Plane() = default;
+	// Destructor
+	~Plane<T>() = default;
 	
-	// Don't allow copying or moving
-	Plane(Plane const&) = delete;
-	Plane& operator=(const Plane&) = delete;
-	Plane(Plane&&) = delete;
-	Plane& operator=(Plane&&) = delete;
+	// Copy Constructor
+	Plane<T>(Plane<T> const&) = delete;
+
+	// Copy-Assignment Operator
+	Plane<T>& operator=(const Plane<T>&) = delete;
+
+	// Move Constructor
+	Plane<T>(Plane<T>&&) = delete;
+
+	// Move-Assignment Operator
+	Plane<T>& operator=(Plane<T>&&) = delete;
 };

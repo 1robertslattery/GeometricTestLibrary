@@ -103,10 +103,10 @@ void AGeometricTestsGameModeBase::TEST_ClosestPointOnRay()
 	//const Vector3<float> Point = Vector3<float>(5.f, 5.f, 6.f);
 	
 	const Vector3<float> RayOrigin = Vector3<float>(2.f, 2.f, 4.f);
-	const Vector3<float> RayDirection = Vector3<float>(10.f, 15.f, 4.f);
-	Ray<float> MyRay(RayOrigin, RayDirection);
-	
-	UGeometricTestLibrary::ClosestPointOnRay(Point, MyRay.GetOrigin(), MyRay.GetDirection());
+	const Vector3<float> RayDelta = Vector3<float>(10.f, 15.f, 4.f);
+	Ray<float> MyRay(RayOrigin, RayDelta);
+		
+	UGeometricTestLibrary::ClosestPointOnRay(Point, MyRay.GetOrigin(), MyRay.GetDelta());
 }
 
 void AGeometricTestsGameModeBase::TEST_ClosestPointOnPlane()
@@ -151,14 +151,14 @@ void AGeometricTestsGameModeBase::TEST_DoesAABBPlaneIntersect()
 void AGeometricTestsGameModeBase::TEST_DoLinesIntersect()  
 {
 	const Vector2<float> Origin1 = Vector2<float>(1.f, 1.f);
-	const Vector2<float> Direction1 = Vector2<float>(7.f, 15.f);
+	const Vector2<float> Delta1 = Vector2<float>(7.f, 15.f);
 	
 	//const Vector2<float> Origin2 = Vector2<float>(-1.f, 5.f);
-	//const Vector2<float> Direction2 = Vector2<float>(-1.f, 2.f);
+	//const Vector2<float> Delta2 = Vector2<float>(-1.f, 2.f);
 	const Vector2<float> Origin2 = Vector2<float>(-1.f, 5.f);
-	const Vector2<float> Direction2 = Vector2<float>(8.f, 12.f);
+	const Vector2<float> Delta2 = Vector2<float>(8.f, 12.f);
 	
-	UGeometricTestLibrary::DoLinesIntersect(Origin1, Direction1, Origin2, Direction2);
+	UGeometricTestLibrary::DoLinesIntersect(Origin1, Delta1, Origin2, Delta2);
 }
 
 void AGeometricTestsGameModeBase::TEST_DoesRayAABBIntersect()  
@@ -166,14 +166,14 @@ void AGeometricTestsGameModeBase::TEST_DoesRayAABBIntersect()
 	Vector3<float>* ReturnNormal = nullptr;
 
 	const Vector3<float> RayOrigin = Vector3<float>(-1.f, 2.f, 5.f);
-	const Vector3<float> RayDirection = Vector3<float>(-1.f, 5.f, 7.f);
-	Ray<float> MyRay(RayOrigin, RayDirection);
+	const Vector3<float> RayDelta = Vector3<float>(-1.f, 5.f, 7.f);
+	Ray<float> MyRay(RayOrigin, RayDelta);
 	
 	const Vector3<float> MinBounds = Vector3<float>(-1.f, -1.f, -1.f);
 	const Vector3<float> MaxBounds = Vector3<float>(5.f, 5.f, 5.f);
 	AABB<float> MyAABB(MinBounds, MaxBounds);
 	
-	UGeometricTestLibrary::DoesRayAABBIntersect(MyRay.GetOrigin(), MyRay.GetDirection(), MyAABB, ReturnNormal);
+	UGeometricTestLibrary::DoesRayAABBIntersect(MyRay.GetOrigin(), MyRay.GetDelta(), MyAABB, ReturnNormal);
 
 	/*
 	 * NOTE: AABB can be replaced by any box, square, capsule, etc. 
@@ -183,8 +183,8 @@ void AGeometricTestsGameModeBase::TEST_DoesRayAABBIntersect()
 void AGeometricTestsGameModeBase::TEST_DoesRayPlaneIntersect()  
 {
 	const Vector3<float> RayOrigin = Vector3<float>(1.f, 1.f, 1.f);
-	const Vector3<float> RayDirection = Vector3<float>(7.f, 15.f, 18.f);
-	Ray<float> MyRay(RayOrigin, RayDirection);
+	const Vector3<float> RayDelta = Vector3<float>(7.f, 15.f, 18.f);
+	Ray<float> MyRay(RayOrigin, RayDelta);
 
 	const float A = -1.f;
 	const float B = 2.f;
@@ -194,7 +194,7 @@ void AGeometricTestsGameModeBase::TEST_DoesRayPlaneIntersect()
 	
 	UGeometricTestLibrary::DoesRayPlaneIntersect(
 		  MyRay.GetOrigin()
-		, MyRay.GetDirection()
+		, MyRay.GetDelta()
 		, MyPlane.Normal
 		, MyPlane.D);
 }
@@ -202,8 +202,8 @@ void AGeometricTestsGameModeBase::TEST_DoesRayPlaneIntersect()
 void AGeometricTestsGameModeBase::TEST_DoesRaySphereIntersect()  
 {
 	const Vector3<float> RayOrigin = Vector3<float>(0.f, 0.f, 0.f);
-	const Vector3<float> RayDirection = Vector3<float>(5.f, 8.f, 5.f);
-	Ray<float> MyRay(RayOrigin, RayDirection);
+	const Vector3<float> RayDelta = Vector3<float>(5.f, 8.f, 5.f);
+	Ray<float> MyRay(RayOrigin, RayDelta);
 
 	const Vector3<float> SphereCenter = Vector3<float>(3.f, 3.f, 3.f);
 	const float SphereRadius = 5.f;
@@ -213,14 +213,14 @@ void AGeometricTestsGameModeBase::TEST_DoesRaySphereIntersect()
 		  MyCircle.GetCenter()
 		, MyCircle.GetRadius()
 		, MyRay.GetOrigin()
-		, MyRay.GetDirection());
+		, MyRay.GetDelta());
 }
 
 void AGeometricTestsGameModeBase::TEST_DoesRayTriangleIntersect()  
 {
 	const Vector3<float> RayOrigin = Vector3<float>(1.f, 1.f, 1.f);
-	const Vector3<float> RayDirection = Vector3<float>(7.f, 15.f, 18.f);
-	Ray<float> MyRay(RayOrigin, RayDirection);
+	const Vector3<float> RayDelta = Vector3<float>(7.f, 15.f, 18.f);
+	Ray<float> MyRay(RayOrigin, RayDelta);
 	
 	const Vector3<float> Vertex1 = Vector3<float>(2.f, 3.f, 1.f);
 	const Vector3<float> Vertex2 = Vector3<float>(3.f, 5.f, 2.f);
@@ -230,7 +230,7 @@ void AGeometricTestsGameModeBase::TEST_DoesRayTriangleIntersect()
 	
 	UGeometricTestLibrary::DoesRayTriangleIntersect(
 		  MyRay.GetOrigin()
-		, MyRay.GetDirection()
+		, MyRay.GetDelta()
 		, Vertex1
 		, Vertex2
 		, Vertex3
@@ -240,19 +240,19 @@ void AGeometricTestsGameModeBase::TEST_DoesRayTriangleIntersect()
 void AGeometricTestsGameModeBase::TEST_DoRaysIntersect()  
 {
 	const Vector3<float> RayOrigin1 = Vector3<float>(1.f, 1.f, 1.f);
-	const Vector3<float> RayDirection1 = Vector3<float>(7.f, 15.f, 18.f);
+	const Vector3<float> RayDelta1 = Vector3<float>(7.f, 15.f, 18.f);
 	
 	const Vector3<float> RayOrigin2 = Vector3<float>(-1.f, 5.f, 7.f);
-	const Vector3<float> RayDirection2 = Vector3<float>(-1.f, 2.f, 5.f);
+	const Vector3<float> RayDelta2 = Vector3<float>(-1.f, 2.f, 5.f);
 	
-	Ray<float> Ray1(RayOrigin1, RayDirection1);
-	Ray<float> Ray2(RayOrigin2, RayDirection2);
+	Ray<float> Ray1(RayOrigin1, RayDelta1);
+	Ray<float> Ray2(RayOrigin2, RayDelta2);
 	
 	UGeometricTestLibrary::DoRaysIntersect(
 		  Ray1.GetOrigin()
-		, Ray1.GetDirection()
+		, Ray1.GetDelta()
 		, Ray2.GetOrigin()
-		, Ray2.GetDirection());
+		, Ray2.GetDelta());
 }
 
 void AGeometricTestsGameModeBase::TEST_DoesSpherePlaneIntersect_Dynamic()  
@@ -267,12 +267,12 @@ void AGeometricTestsGameModeBase::TEST_DoesSpherePlaneIntersect_Dynamic()
 	const float SphereRadius = 5.f;
 	Circle<float> MyCircle(SphereRadius, SphereCenter);
 
-	Vector3<float> SphereDirectionVector = Vector3<float>(11.f, 3.5f, -9.f);
+	Vector3<float> SphereDeltaVector = Vector3<float>(11.f, 3.5f, -9.f);
 	
 	UGeometricTestLibrary::DoesSpherePlaneIntersect_Dynamic(
 		  MyPlane.Normal
 		, MyPlane.D
-		, SphereDirectionVector
+		, SphereDeltaVector
 		, MyCircle.GetCenter()
 		, MyCircle.GetRadius());
 }
@@ -298,8 +298,8 @@ void AGeometricTestsGameModeBase::TEST_DoesSpherePlaneIntersect_Static()
 
 void AGeometricTestsGameModeBase::TEST_DoSpheresIntersect_Dynamic()  
 {
-	Vector3<float> StationaryDirectionVector = Vector3<float>(3.f, -6.f, -9.f);
-	Vector3<float> MovingDirectionVector = Vector3<float>(11.f, 3.5f, -9.f);
+	Vector3<float> StationaryDeltaVector = Vector3<float>(3.f, -6.f, -9.f);
+	Vector3<float> MovingDeltaVector = Vector3<float>(11.f, 3.5f, -9.f);
 	
 	const Vector3<float> StationarySphereCenter = Vector3<float>(-5.f, -5.f, -5.f);
 	Vector3<float> MovingSphereCenter = Vector3<float>::ZeroVector;
@@ -311,8 +311,8 @@ void AGeometricTestsGameModeBase::TEST_DoSpheresIntersect_Dynamic()
 	Circle<float> StationaryCircle(StationarySphereRadius, StationarySphereCenter);
 	
 	UGeometricTestLibrary::DoSpheresIntersect_Dynamic(
-		  StationaryDirectionVector
-		, MovingDirectionVector
+		  StationaryDeltaVector
+		, MovingDeltaVector
 		, StationaryCircle.GetCenter()
 		, MovingCircle.GetCenter()
 		, StationaryCircle.GetRadius()
@@ -381,7 +381,7 @@ void AGeometricTestsGameModeBase::TEST_DoAABBsIntersect()
 
 void AGeometricTestsGameModeBase::TEST_SolveReflectionVector()
 {
-	Vector3<float> LightDirection = Vector3<float>(-3.f, -5.f, 7.f);
+	Vector3<float> LightDelta = Vector3<float>(-3.f, -5.f, 7.f);
 	
 	const float A = 6.f;
 	const float B = -5.f;
@@ -389,7 +389,7 @@ void AGeometricTestsGameModeBase::TEST_SolveReflectionVector()
 	const float D = -8.f;
 	Plane<float> MyPlane(A, B, C, D);
 		
-	UGeometricTestLibrary::SolveReflectionVector(MyPlane.Normal, LightDirection);
+	UGeometricTestLibrary::SolveReflectionVector(MyPlane.Normal, LightDelta);
 }
 
 void AGeometricTestsGameModeBase::TEST_SolveBarycentricCoordinates3D()

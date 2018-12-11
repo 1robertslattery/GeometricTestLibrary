@@ -22,6 +22,10 @@
  * AABB.h
  *
  * Axis-Aligned Bounding Box
+ *
+ * Defined by the extreme points pMin and pMax:
+ *
+ * B = [pMin, pMax]
 */
 template<typename T>
 struct AABB
@@ -29,23 +33,36 @@ struct AABB
 	
 public:
 
-	// Constructor
-	explicit AABB<T>(
+	// Constructor: No Arguments
+	inline explicit AABB<T>() :	
+		  Min(Vector3<T>::ZeroVector)
+		, Max(Vector3<T>::ZeroVector)
+	{}
+
+	// Constructor: Passing Min and Max
+	inline explicit AABB<T>(
 		  const Vector3<T>& _Min
 		, const Vector3<T>& _Max) : 
 		  Min(_Min)
 		, Max(_Max)
 	{}
 
-	~AABB() = default;
+	// Destructor
+	~AABB<T>() = default;
 	
-	// Don't allow copying or moving
-	AABB(AABB const&) = delete;
-	AABB& operator=(const AABB&) = delete;
-	AABB(AABB&&) = delete;
-	AABB& operator=(AABB&&) = delete;
+	// Copy Constructor
+	AABB<T>(AABB<T> const&) = delete;
+
+	// Copy-Assignment Operator
+	AABB<T>& operator=(const AABB<T>&) = delete;
+
+	// Move Constructor
+	AABB<T>(AABB<T>&&) = delete;
+
+	// Move-Assignment Operator
+	AABB<T>& operator=(AABB<T>&&) = delete;
 	
-	inline void Clear() const noexcept
+	inline void Clear() const
 	{
 		GetMin().X = GetMin().Y = GetMin().Z = FLT_MAX;
 		GetMax().X = GetMax().Y = GetMax().Z = -FLT_MAX;
@@ -63,15 +80,19 @@ public:
 		if (Point.Z > GetMax().X) GetMax().Z = (T)Point.Z;
 	}
 	
-	inline constexpr Vector3<T> GetMin() const noexcept { return Min; }
-	inline void SetMin(const Vector3<T>& _Min) { return Min = _Min; }
-	
-	inline constexpr Vector3<T> GetMax() const noexcept { return Max; }
-	inline void SetMax(const Vector3<T>& _Max) { return Max = _Max; }
+	inline constexpr Vector3<T> GetMin() const { return Min; }
+	inline constexpr Vector3<T> GetMax() const { return Max; }
+
+	inline void Set(const Vector3<T>& _Min, const Vector3<T>& _Max) 
+	{
+		Min = _Min;
+		Max = _Max; 
+	}
 		
 private:
 
+	//~ AABB Variables
 	Vector3<T> Min;
 	Vector3<T> Max;
-
+	//~ End AABB Variables
 };

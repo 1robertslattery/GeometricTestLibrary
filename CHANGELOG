@@ -1,2 +1,8 @@
 2018-12-05: v1.0.0:
 + Initial Commit
+
+2018-12-11: v1.1.0:
++ Added copying and moving behavior to each of the geometric primitive data structures
++ Fixed logging messages in GeometricTestLibrary.h
++ Simplified Vector2 syntax in Vector.h
++ Added new primitive to library, Triangle.h

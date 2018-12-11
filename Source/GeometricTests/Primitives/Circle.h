@@ -36,32 +36,49 @@ struct Circle
 	
 public:
 
-	explicit Circle<T>(
+	// Constructor: No Arguments
+	inline explicit Circle<T>() :
+		  Radius(0.f)
+		, Center(Vector3<T>::ZeroVector)
+	{}
+
+	// Constructor: Passing Radius and Center
+	inline explicit Circle<T>(
 		  float _Radius
 		, Vector3<T> _Center = Vector3<T>::ZeroVector) : 
 		  Radius(_Radius)
 		, Center(_Center)
 	{}
 	
-	~Circle() = default;
+	// Destructor
+	~Circle<T>() = default;
 
-	// Don't allow copying or moving
-	Circle(Circle const&) = delete;
-	Circle& operator=(const Circle&) = delete;
-	Circle(Circle&&) = delete;
-	Circle& operator=(Circle&&) = delete;
+	// Copy Constructor
+	Circle<T>(Circle<T> const&) = delete;
+
+	// Copy-Assignment Operator
+	Circle<T>& operator=(const Circle<T>&) = delete;
+
+	// Move Constructor
+	Circle<T>(Circle<T>&&) = delete;
+
+	// Move-Assignment Operator
+	Circle<T>& operator=(Circle<T>&&) = delete;
 	
-	inline constexpr float GetRadius() const noexcept { return Radius; }
-	inline void SetRadius(const float _Radius) { return Radius = _Radius; }
-	
-	inline constexpr Vector3<T> GetCenter() const noexcept { return Center; }
-	inline void SetCenter(const Vector3<T>& _Center) { return Center = _Center; }
+	inline constexpr float GetRadius() const { return Radius; }
+	inline constexpr Vector3<T> GetCenter() const { return Center; }
+
+	inline void Set(const float _Radius, const Vector3<T>& _Center) 
+	{
+		Radius = _Radius;
+		Center = _Center;
+	}
 			
 private:
 
-	//~ Circle Data
-	float Radius;			// r
+	//~ Circle Variables
+	float Radius;			// r (4 bytes)
 	Vector3<T> Center;		// (h, k)
-	//~ Total Memory Load = 4 bytes
+	//~ End Circle Variables
 	
 };
