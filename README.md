@@ -94,6 +94,7 @@ These tests are designed to be used with any `C++` application or game engine, h
 | `Circle.h`	| Circle Data				|
 | `Plane.h`	| Plane Data				|
 | `Ray.h`	| Ray Data				|
+| `Triangle.h`	| Triangle Data				|
 
 ## LICENSE
 
