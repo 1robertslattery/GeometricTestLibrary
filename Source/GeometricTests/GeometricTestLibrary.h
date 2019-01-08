@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2018 Robert Slattery
+ * Copyright (c) 2018-2019 Robert Slattery
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -59,7 +59,7 @@
  * 17. Reflection Vector
  * 18. Barycentric Coordinates of Triangle in 3D
  *
- * Updated December 11, 2018
+ * Updated January 8, 2019
 */
 UCLASS()
 class GEOMETRICTESTS_API UGeometricTestLibrary : public UObject
@@ -642,28 +642,34 @@ inline static Vector2<T> UGeometricTestLibrary::DoLinesIntersect(
 }
 
 /*
- * Intersection of Ray-AABB
+ * Intersection of a Ray and an AABB
  *
- * Common for line of sight tests
+ * Common for line of sight or tests that require
+ * trivial rejection on complex objects.
+ *
+ * Determine which side of the box will be intersected
+ * and then perform ray-plane intersection test on 
+ * that side. If the point of intersection with the
+ * plane is within AABB, there is intersection. 
+ * Otherwise, there is not.
  *
  * 1, -1	No Intersection
  * 0		Intersection
 */
 template<typename T>
 inline static float UGeometricTestLibrary::DoesRayAABBIntersect(
-	  const Vector3<T>& RayOrigin
-	, const Vector3<T>& RayDelta
-	, const AABB<T>& AABB_Ref
-	, Vector3<T>* ReturnNormal)
+	  const Vector3<T>& RayOrigin		// origin of ray
+	, const Vector3<T>& RayDelta		// length and direction of ray
+	, const AABB<T>& AABB_Ref			// AABB data
+	, Vector3<T>* ReturnNormal)			// normal to return
 {
-	const float NoIntersection = FLT_MAX;
+	const float NoIntersection = FLT_MAX;	// Bogus value
 	
 	// Check for point inside box, trivial reject,
-	// and determine parametric distance to each
-	// front face
-	bool Inside = true;
+	// and determine parametric distance to each front face
+	bool IsInside = true;
 	
-	float xt, xn;
+	float xt = 0.f, xn = 0.f;
 	
 	if (RayOrigin.X < AABB_Ref.GetMin().X)
 	{
@@ -672,7 +678,7 @@ inline static float UGeometricTestLibrary::DoesRayAABBIntersect(
 		if (xt > RayDelta.X) return NoIntersection;
 		
 		xt /= RayDelta.X;
-		Inside = false;
+		IsInside = false;
 		xn = -1.0f;
 	}
 	else if (RayOrigin.X > AABB_Ref.GetMax().X)
@@ -682,15 +688,13 @@ inline static float UGeometricTestLibrary::DoesRayAABBIntersect(
 		if (xt < RayDelta.X) return NoIntersection;
 		
 		xt /= RayDelta.X;
-		Inside = false;
+		IsInside = false;
 		xn = 1.0f;
 	}
 	else
-	{
 		xt = -1.0f;
-	}
-	
-	float yt, yn;
+		
+	float yt = 0.f, yn = 0.f;
 	
 	if (RayOrigin.Y < AABB_Ref.GetMin().Y)
 	{
@@ -699,7 +703,7 @@ inline static float UGeometricTestLibrary::DoesRayAABBIntersect(
 		if (yt > RayDelta.Y) return NoIntersection;
 		
 		yt /= RayDelta.Y;
-		Inside = false;
+		IsInside = false;
 		yn = -1.0f;
 	}
 	else if (RayOrigin.Y > AABB_Ref.GetMax().Y)
@@ -709,15 +713,13 @@ inline static float UGeometricTestLibrary::DoesRayAABBIntersect(
 		if (yt < RayDelta.Y) return NoIntersection;
 		
 		yt /= RayDelta.Y;
-		Inside = false;
+		IsInside = false;
 		yn = 1.0f;
 	}
 	else
-	{
 		yt = -1.0f;
-	}
-	
-	float zt, zn;
+		
+	float zt = 0.f, zn = 0.f;
 	
 	if (RayOrigin.Z < AABB_Ref.GetMin().Z)
 	{
@@ -726,7 +728,7 @@ inline static float UGeometricTestLibrary::DoesRayAABBIntersect(
 		if (zt > RayDelta.Z) return NoIntersection;
 		
 		zt /= RayDelta.Z;
-		Inside = false;
+		IsInside = false;
 		zn = -1.0f;
 	}
 	else if (RayOrigin.Z > AABB_Ref.GetMax().Z)
@@ -736,81 +738,73 @@ inline static float UGeometricTestLibrary::DoesRayAABBIntersect(
 		if (zt < RayDelta.Z) return NoIntersection;
 		
 		zt /= RayDelta.Z;
-		Inside = false;
+		IsInside = false;
 		zn = 1.0f;
 	}
 	else
-	{
 		zt = -1.0f;
-	}
-	
-	// Ray origin inside box?
-	if (Inside)
+		
+	// If ray origin is inside box, then return intersection
+	if (IsInside)
 	{
 		if (ReturnNormal != nullptr)
-		{
-			*ReturnNormal = -RayDelta;
-			//MyMathLibrary::Normalize(ReturnNormal);
-		}
-		
+			*ReturnNormal = -RayDelta;	// unnormalized
+				
 		return 0.0f;
 	}
 	
-	// Select farthest plane, the plane of intersection
-	int Which = 0;
+	// Select the farthest plane, the plane of intersection
+	int PlaneID = 0;
 	float t = xt;
 	
 	if (yt > t)
 	{
-		Which = 1;
+		PlaneID = 1;
 		t = yt;
 	}
 	
 	if (zt > t)
 	{
-		Which = 2;
+		PlaneID = 2;
 		t = zt;
 	}
 	
-	switch (Which)
+	switch (PlaneID)
 	{
 		case 0:		// intersect with yz plane
 		{
-			float y = RayOrigin.Y + RayDelta.Y * t;
+			float y = RayOrigin.Y + RayDelta.Y*t;
 			if (y < AABB_Ref.GetMin().Y || y > AABB_Ref.GetMax().Y) return NoIntersection;
 			
-			float z = RayOrigin.Z + RayDelta.Z * t;
+			float z = RayOrigin.Z + RayDelta.Z*t;
 			if (z < AABB_Ref.GetMin().Z || z > AABB_Ref.GetMax().Z) return NoIntersection;
 			
 			if (ReturnNormal != nullptr)
 				ReturnNormal->Set(xn, 0.0f, 0.0f);
-						
 		} break;
 			
 		case 1:		// intersect with xz plane
 		{
-			float x = RayOrigin.X + RayDelta.X * t;
+			float x = RayOrigin.X + RayDelta.X*t;
 			if (x < AABB_Ref.GetMin().X || x > AABB_Ref.GetMax().X) return NoIntersection;
 			
-			float z = RayOrigin.Z + RayDelta.Z * t;
+			float z = RayOrigin.Z + RayDelta.Z*t;
 			if (z < AABB_Ref.GetMin().Z || z > AABB_Ref.GetMax().Z) return NoIntersection;
 			
 			if (ReturnNormal != nullptr)
 				ReturnNormal->Set(0.0f, yn, 0.0f);
-						
 		} break;
 		
 		case 2:		// intersect with xy plane
 		{
-			float x = RayOrigin.X + RayDelta.X * t;
+			float x = RayOrigin.X + RayDelta.X*t;
 			if (x < AABB_Ref.GetMin().X || x > AABB_Ref.GetMax().X) return NoIntersection;
 			
-			float y = RayOrigin.Y + RayDelta.Y * t;
+			float y = RayOrigin.Y + RayDelta.Y*t;
 			if (y < AABB_Ref.GetMin().Y || y > AABB_Ref.GetMax().Y) return NoIntersection;
 			
 			if (ReturnNormal != nullptr)
 				ReturnNormal->Set(0.0f, 0.0f, zn);
-						
 		} break;
 	}
 	
@@ -862,7 +856,7 @@ inline static bool UGeometricTestLibrary::DoesRayPlaneIntersect(
 	{
 		GEngine->AddOnScreenDebugMessage(
 			  1, 30.f, FColor::Red
-			, TEXT("\nRay parallel to plane! No intersection!, GeometricTestLibrary.h:865\n"));
+			, TEXT("\nRay parallel to plane! No intersection!, GeometricTestLibrary.h:859\n"));
 
 		return Result;
 	}
@@ -883,7 +877,7 @@ inline static bool UGeometricTestLibrary::DoesRayPlaneIntersect(
 	{
 		GEngine->AddOnScreenDebugMessage(
 			  1, 30.f, FColor::Red
-			, TEXT("\nFAILURE! No intersection!, GeometricTestLibrary.h:886\n"));
+			, TEXT("\nFAILURE! No intersection!, GeometricTestLibrary.h:880\n"));
 
 		Result = false;
 	}
@@ -891,7 +885,7 @@ inline static bool UGeometricTestLibrary::DoesRayPlaneIntersect(
 	{
 		GEngine->AddOnScreenDebugMessage(
 			  1, 30.f, FColor::Red
-			, TEXT("\nSUCCESS! Ray and Plane intersect!, GeometricTestLibrary.h:894\n"));
+			, TEXT("\nSUCCESS! Ray and Plane intersect!, GeometricTestLibrary.h:888\n"));
 
 		Result = true;
 	}
@@ -939,7 +933,7 @@ inline static bool UGeometricTestLibrary::DoesRaySphereIntersect(
 	{
 		GEngine->AddOnScreenDebugMessage(
 			  1, 30.f, FColor::Red
-			, TEXT("Intersection at point of ray origin!, GeometricTestLibrary.h:942"));
+			, TEXT("Intersection at point of ray origin!, GeometricTestLibrary.h:936"));
 
 		Result = true;
 		return Result;
@@ -959,7 +953,7 @@ inline static bool UGeometricTestLibrary::DoesRaySphereIntersect(
 	{
 		GEngine->AddOnScreenDebugMessage(
 			  2, 30.f, FColor::Red
-			, TEXT("\nFAILURE! No intersection!, Square root value is negative!, GeometricTestLibrary.h:962\n"));
+			, TEXT("\nFAILURE! No intersection!, Square root value is negative!, GeometricTestLibrary.h:956\n"));
 
 		return Result;
 	}
@@ -975,7 +969,7 @@ inline static bool UGeometricTestLibrary::DoesRaySphereIntersect(
 	{
 		GEngine->AddOnScreenDebugMessage(
 			  3, 30.f, FColor::Red
-			, TEXT("\nFAILURE! No intersection!, GeometricTestLibrary.h:978\n"));
+			, TEXT("\nFAILURE! No intersection!, GeometricTestLibrary.h:972\n"));
 
 		Result = false;
 	}
@@ -983,7 +977,7 @@ inline static bool UGeometricTestLibrary::DoesRaySphereIntersect(
 	{
 		GEngine->AddOnScreenDebugMessage(
 			  4, 30.f, FColor::Red
-			, TEXT("\nSUCCESS! Ray and sphere intersected at t = 0!, GeometricTestLibrary.h:986\n"));
+			, TEXT("\nSUCCESS! Ray and sphere intersected at t = 0!, GeometricTestLibrary.h:980\n"));
 
 		Result = true;
 	}
@@ -991,46 +985,49 @@ inline static bool UGeometricTestLibrary::DoesRaySphereIntersect(
 	return Result; 	
 }
 
-// Intersection Ray-Triangle
+/* 
+ * Intersection of a Ray and a Triangle
+ *
+ * Solve the point where the ray intersects the 
+ * plane containing the triangle. Then test to 
+ * see whether point in inside triangle by 
+ * solving barycentric coordinates of the point.
+ *
+ * We are testing collisions where the ray 
+ * approaches the triangle from the front side.
+*/
 template<typename T>	
 inline static float UGeometricTestLibrary::DoesRayTriangleIntersect(
 	  const Vector3<T>& RayOrigin		// origin of ray
 	, const Vector3<T>& RayDelta		// direction and length of ray
 	, const Vector3<T>& Vertex1			// triangle vertices
-	, const Vector3<T>& Vertex2			// .
-	, const Vector3<T>& Vertex3			// .
+	, const Vector3<T>& Vertex2			// ...
+	, const Vector3<T>& Vertex3			// ...
 	, float MinT)						// closest intersection found so far, start at 1.0f
 {
 	const float NoIntersection = FLT_MAX;
 	
-	// Clockwise edge vectors
+	// Solve clockwise edge vectors
 	Vector3<T> e1 = Vertex2 - Vertex1;
 	Vector3<T> e2 = Vertex3 - Vertex2;
 	
-	// Surface Normal (Unnormalized)
+	// Solve Surface Normal (unnormalized), i.e., the cross product of two non-parallel edges
 	Vector3<T> n = MyMathLibrary::CrossProduct(e1, e2);
 	
-	// Gradient which tells us how steep
-	// of an angle we are approaching the front side of the triangle
+	// Solve gradient which tells us how steep of an 
+	// angle we are approaching the front side of the triangle
 	float dot = MyMathLibrary::DotProduct(n, RayDelta);
 	
 	// Check for a ray that is parallel to the triangle, 
 	// or not pointing towards the front face of the triangle.
-	//
-	// Note that this also will reject degenerate triangles and 
-	// rays as well. We code this in a very particular way
-	// so that NaNs will bail here.
-	// This does NOT behave the same as dot >= 0 when NaNs are involved
+	// This will also reject degenerate triangles and rays as well.
 	if (!(dot < 0.0f))
 		return NoIntersection;
 	
-	// Compute d value for the plane equation. We will use the 
-	// plane equation with d on the right side:
-	//
-	// ax + by + cz + d = 0
+	// Solve d value for the plane equation
 	float d = MyMathLibrary::DotProduct(n, Vertex1);
 	
-	// Compute parametric point of intersection with the plane
+	// Solve parametric point of intersection with the plane
 	// containing the triangle, checking at the earliest
 	// possible stages for trivial rejection
 	float t = d - MyMathLibrary::DotProduct(n, RayOrigin);
@@ -1047,12 +1044,12 @@ inline static float UGeometricTestLibrary::DoesRayTriangleIntersect(
 	t /= dot;
 	check(t >= 0.0f && t <= MinT);	// "check" is from UE4. In C++, use "assert".
 	
-	// 3D point of intersection
-	Vector3<T> p = RayOrigin + RayDelta * t;
+	// Solve p, the 3D point of intersection
+	Vector3<T> p = RayOrigin + (RayDelta*t);
 	
 	// Dominant axis to select which plane to project onto
-	float u0, u1, u2;
-	float v0, v1, v2;
+	float u0 = 0.f, u1 = 0.f, u2 = 0.f;
+	float v0 = 0.f, v1 = 0.f, v2 = 0.f;
 	
 	if (std::fabs(n.X) > std::fabs(n.Y))
 	{
@@ -1101,15 +1098,12 @@ inline static float UGeometricTestLibrary::DoesRayTriangleIntersect(
 		}
 	}
 	
-	// Denominator
+	// Solve Denominator
 	float Denominator = u1*v2 - v1*u2;
-	
-	if (!(Denominator != 0.0f))
-		return NoIntersection;
-	
+	if (!(Denominator != 0.0f))	return NoIntersection;
 	Denominator = 1.0f / Denominator;
-	
-	// Barycentric coords, checking for out of range at each step
+
+	// Solve barycentric coordinates, checking for out of range at each step
 	float alpha = (u0*v2 - v0*u2) * Denominator;
 	if (!(alpha >= 0.0f)) return NoIntersection;
 	
@@ -1182,7 +1176,7 @@ inline static bool UGeometricTestLibrary::DoRaysIntersect(
 	{
 		GEngine->AddOnScreenDebugMessage(
 			  1, 30.f, FColor::Red
-			, TEXT("\nRays are coincident! Infinite number of solutions!, GeometricTestLibrary.h:1185"));
+			, TEXT("\nRays are coincident! Infinite number of solutions!, GeometricTestLibrary.h:1179"));
 		
 		return false;
 	}
@@ -1193,7 +1187,7 @@ inline static bool UGeometricTestLibrary::DoRaysIntersect(
 	{
 		GEngine->AddOnScreenDebugMessage(
 			  2, 30.f, FColor::Red
-			, TEXT("\nRays are parallel! No solutions and no intersection!, GeometricTestLibrary.h:1196"));
+			, TEXT("\nRays are parallel! No solutions and no intersection!, GeometricTestLibrary.h:1190"));
 
 		return false;
 	}
@@ -1204,14 +1198,27 @@ inline static bool UGeometricTestLibrary::DoRaysIntersect(
 	// Solve ((p2 - p1) x d1) * (d1 x d2) / ||d1 x d2||^2
 	float t2 = Numerator2 / Denominator;
 	
-	// Solve R1, R2
+	// Solve R1, R2 for point of intersection
 	Vector3<T> R1 = RayOrigin1 + (RayDelta1*t1);
 	Vector3<T> R2 = RayOrigin2 + (RayDelta2*t2);
 
-	// TODO: Solve skew lines by examining distance between t1 and t2
-					
 	// Return true if the two rays intersect at t1 == 0 && t2 == 0
-	return !(t1 < 0 || t1 > R1.Magnitude() || t2 < 0 || t2 > R2.Magnitude());	
+	if (t1 < 0 || t1 > R1.Magnitude() || t2 < 0 || t2 > R2.Magnitude())
+	{
+		GEngine->AddOnScreenDebugMessage(
+			2, 30.f, FColor::Red
+			, TEXT("\nRays are skew! They are neither parallel nor do they intersect!, GeometricTestLibrary.h:1210"));
+
+		return false;
+	}
+	else
+	{
+		GEngine->AddOnScreenDebugMessage(
+			2, 30.f, FColor::Red
+			, TEXT("\nSUCCESS! Rays intersect!, GeometricTestLibrary.h:1218"));
+
+		return true;
+	}
 }
 
 /*
@@ -1271,7 +1278,7 @@ inline static bool UGeometricTestLibrary::DoesSpherePlaneIntersect_Dynamic(
 	{
 		GEngine->AddOnScreenDebugMessage(
 			  -1, 30.f, FColor::Red
-			, TEXT("\nNo intersection!, GeometricTestLibrary.h:1274\n"));
+			, TEXT("\nNo intersection!, GeometricTestLibrary.h:1281\n"));
 
 		return false;
 	}
@@ -1279,7 +1286,7 @@ inline static bool UGeometricTestLibrary::DoesSpherePlaneIntersect_Dynamic(
 	{
 		GEngine->AddOnScreenDebugMessage(
 			  -1, 30.f, FColor::Red
-			, TEXT("\nSUCCESS! Sphere and plane intersect during time in question!, GeometricTestLibrary.h:1282\n"));
+			, TEXT("\nSUCCESS! Sphere and plane intersect during time in question!, GeometricTestLibrary.h:1289\n"));
 
 		return true;
 	}
@@ -1386,9 +1393,10 @@ inline static bool UGeometricTestLibrary::DoSpheresIntersect_Dynamic(
 	{
 		GEngine->AddOnScreenDebugMessage(
 			  1, 30.f, FColor::Red
-			, TEXT("\nFAILURE! No intersection! Square root value is negative!, GeometricTestLibrary.h:1389\n"));
+			, TEXT("\nFAILURE! No intersection! Square root value is negative!, GeometricTestLibrary.h:1396\n"));
 
 		Result = false;
+		return Result;
 	}
 	
 	// Solve t
@@ -1402,7 +1410,7 @@ inline static bool UGeometricTestLibrary::DoSpheresIntersect_Dynamic(
 	{
 		GEngine->AddOnScreenDebugMessage(
 			  2, 30.f, FColor::Red
-			, TEXT("\nFAILURE! No intersection!, GeometricTestLibrary.h:1405\n"));
+			, TEXT("\nFAILURE! No intersection!, GeometricTestLibrary.h:1413\n"));
 
 		Result = false;
 	}
@@ -1413,7 +1421,7 @@ inline static bool UGeometricTestLibrary::DoSpheresIntersect_Dynamic(
 		{
 			GEngine->AddOnScreenDebugMessage(
 				  3, 30.f, FColor::Red
-				, TEXT("\nSUCCESS! Spheres intersected at t = 0!, GeometricTestLibrary.h:1416\n"));
+				, TEXT("\nSUCCESS! Spheres intersected at t = 0!, GeometricTestLibrary.h:1424\n"));
 
 			Result = true;
 		}
@@ -1452,7 +1460,7 @@ inline static bool UGeometricTestLibrary::DoSpheresIntersect_Static(
 	{
 		GEngine->AddOnScreenDebugMessage(
 			  1, 30.f, FColor::Red
-			, TEXT("\nSUCCESS! Spheres intersect!, GeometricTestLibrary.h:1455\n"));
+			, TEXT("\nSUCCESS! Spheres intersect!, GeometricTestLibrary.h:1463\n"));
 
 		return true;
 	}
@@ -1460,7 +1468,7 @@ inline static bool UGeometricTestLibrary::DoSpheresIntersect_Static(
 	{
 		GEngine->AddOnScreenDebugMessage(
 			  2, 30.f, FColor::Red
-			, TEXT("\nFAILURE! Spheres do not intersect!, GeometricTestLibrary.h:1463\n"));
+			, TEXT("\nFAILURE! Spheres do not intersect!, GeometricTestLibrary.h:1471\n"));
 
 		return false;
 	}	
@@ -1526,7 +1534,7 @@ inline static Vector3<T> UGeometricTestLibrary::PointOfIntersection(
 	{
 		GEngine->AddOnScreenDebugMessage(
 			  1, 30.f, FColor::Red
-			, TEXT("\nFAILURE! A pair of planes are parallel! No intersection!, GeometricTestLibrary.h:1529"));
+			, TEXT("\nFAILURE! A pair of planes are parallel! No intersection!, GeometricTestLibrary.h:1537"));
 
 		return Result;
 	}
@@ -1699,7 +1707,7 @@ inline static Vector3<T> UGeometricTestLibrary::SolveBarycentricCoordinates3D(
 	{
 		GEngine->AddOnScreenDebugMessage(
 			  1, 30.f, FColor::Red
-			, TEXT("\nFAILURE! No coordinates!, GeometricTestLibrary.h:1702\n"));
+			, TEXT("\nFAILURE! No coordinates!, GeometricTestLibrary.h:1710\n"));
 
 		return Result;
 	}
@@ -1722,3 +1730,14 @@ inline static Vector3<T> UGeometricTestLibrary::SolveBarycentricCoordinates3D(
 	// Return barycentric coordinates of triangle
 	return Result;
 }
+
+/*
+ * These previous problems are courtesy of 
+ * "3D Math Primer for Graphics and Game Development" by Dunn & Parberry:
+ *
+ * Intersection of AABB-Plane
+ * Intersection Ray-AABB
+ * Intersection of Ray-Triangle
+ * Intersection of Two AABBs
+ * Barycentric Coordinates of a Triangle in 3D
+*/

@@ -6,3 +6,6 @@
 + Fixed logging messages in GeometricTestLibrary.h
 + Simplified Vector2 syntax in Vector.h
 + Added new primitive to library, Triangle.h
+
+2018-01-08: v1.1.1:
++ Improved comments in GeometricTestLibrary.h

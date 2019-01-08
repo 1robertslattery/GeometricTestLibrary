@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2018 Robert Slattery
+ * Copyright (c) 2018-2019 Robert Slattery
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -29,13 +29,13 @@ void AGeometricTestsGameModeBase::BeginPlay()
 	Super::BeginPlay();
 	
 	// Closest Point in AABB
-	TEST_ClosestPointInAABB();
+	//TEST_ClosestPointInAABB();
 	
 	// Closest Point on Ray
 	//TEST_ClosestPointOnRay();
 	
 	// Closest Point on Plane
-	//TEST_ClosestPointOnPlane();
+	TEST_ClosestPointOnPlane();
 	
 	// Closest Point on Sphere
 	//TEST_ClosestPointOnSphere();
@@ -239,11 +239,11 @@ void AGeometricTestsGameModeBase::TEST_DoesRayTriangleIntersect()
 
 void AGeometricTestsGameModeBase::TEST_DoRaysIntersect()  
 {
-	const Vector3<float> RayOrigin1 = Vector3<float>(1.f, 1.f, 1.f);
-	const Vector3<float> RayDelta1 = Vector3<float>(7.f, 15.f, 18.f);
+	const Vector3<float> RayOrigin1 = Vector3<float>(10.f, 15.f, 1.f);
+	const Vector3<float> RayDelta1 = Vector3<float>(49.f, 25.f, 1.f);
 	
-	const Vector3<float> RayOrigin2 = Vector3<float>(-1.f, 5.f, 7.f);
-	const Vector3<float> RayDelta2 = Vector3<float>(-1.f, 2.f, 5.f);
+	const Vector3<float> RayOrigin2 = Vector3<float>(20.f, 10.f, 1.f);
+	const Vector3<float> RayDelta2 = Vector3<float>(32.f, 32.f, 1.f);
 	
 	Ray<float> Ray1(RayOrigin1, RayDelta1);
 	Ray<float> Ray2(RayOrigin2, RayDelta2);

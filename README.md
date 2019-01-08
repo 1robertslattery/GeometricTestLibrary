@@ -100,7 +100,7 @@ These tests are designed to be used with any `C++` application or game engine, h
 
 > Apache 2.0 License
 >
-> Copyright (c) 2018 Robert Slattery
+> Copyright (c) 2018-2019 Robert Slattery
 >
 > Licensed under the Apache License, Version 2.0 (the "License"); you may not use this file except in compliance with the License. You may obtain a copy of the License at
 >
