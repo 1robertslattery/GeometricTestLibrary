@@ -990,7 +990,7 @@ inline static bool UGeometricTestLibrary::DoesRaySphereIntersect(
  *
  * Solve the point where the ray intersects the 
  * plane containing the triangle. Then test to 
- * see whether point in inside triangle by 
+ * see whether point is inside triangle by 
  * solving barycentric coordinates of the point.
  *
  * We are testing collisions where the ray 
@@ -1487,7 +1487,7 @@ inline static bool UGeometricTestLibrary::DoSpheresIntersect_Static(
  * n = plane normal, a.k.a. surface normal, a.k.a. cross product of two non-parallel edges of polygon
  * d = p*n = The Plane Equation (ax + by + cz + d = 0), the distance from the plane to the point (i.e., d1 = p*n1) 
  *
- * If any pair of planes is parallel, the the point of intersection
+ * If any pair of planes is parallel, the point of intersection
  * either does not exist or is not unique.  The denominator of 
  * the equation will be zero in this case.
 */
@@ -1527,7 +1527,7 @@ inline static Vector3<T> UGeometricTestLibrary::PointOfIntersection(
 	// Solve (n1 x n2) * n3
 	float Denominator = MyMathLibrary::DotProduct(CrossProd1, NormalizedPlaneNormal3);
 	
-	// If any pair of planes is parallel, the the point of intersection
+	// If any pair of planes is parallel, the point of intersection
 	// either does not exist or is not unique. The denominator of 
 	// the equation will be zero in this case.
 	if (Denominator == 0.f)
