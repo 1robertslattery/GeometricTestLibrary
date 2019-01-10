@@ -59,7 +59,7 @@
  * 17. Reflection Vector
  * 18. Barycentric Coordinates of Triangle in 3D
  *
- * Updated January 8, 2019
+ * Updated January 10, 2019
 */
 UCLASS()
 class GEOMETRICTESTS_API UGeometricTestLibrary : public UObject
@@ -1582,11 +1582,16 @@ inline static bool UGeometricTestLibrary::DoAABBsIntersect(
 /*
  * Reflection Vector ("Perfect Mirror Bounce")
  *
- * Solve for r:
+ * Formula:
  *
  * r = 2(n * l)n - l
  *
+ * But in order to "bounce", we must negate the r:
+ *
+ * r = -2(n * l)n + l
+ *
  * Where:
+ *
  * n = normalized surface normal
  * l = normalized delta of light source
 */
@@ -1603,14 +1608,14 @@ inline static Vector3<T> UGeometricTestLibrary::SolveReflectionVector(
 	// Solve l
 	const Vector3<T> LightNormal = MyMathLibrary::Normalize(LightDelta);
 	
-	// Solve 2(n * l)
-	float Dot = 2 * MyMathLibrary::DotProduct(NormalizedSurfaceNormal, LightNormal);
+	// Solve -2(n * l)
+	const float Dot = -2 * MyMathLibrary::DotProduct(NormalizedSurfaceNormal, LightNormal);
 	
-	// Solve n - l
-	const Vector3<T> Difference = NormalizedSurfaceNormal - LightNormal;
+	// Solve n + l
+	const Vector3<T> Sum = NormalizedSurfaceNormal + LightNormal;
 	
 	// Solve r
-	Result = Difference * Dot;
+	Result = Sum * Dot;
 	
 	// Print r
 	GEngine->AddOnScreenDebugMessage(1, 30.f, FColor::Red, TEXT("\nReflection vector of l about n is..."));
@@ -1707,7 +1712,7 @@ inline static Vector3<T> UGeometricTestLibrary::SolveBarycentricCoordinates3D(
 	{
 		GEngine->AddOnScreenDebugMessage(
 			  1, 30.f, FColor::Red
-			, TEXT("\nFAILURE! No coordinates!, GeometricTestLibrary.h:1710\n"));
+			, TEXT("\nFAILURE! No coordinates!, GeometricTestLibrary.h:1714\n"));
 
 		return Result;
 	}
