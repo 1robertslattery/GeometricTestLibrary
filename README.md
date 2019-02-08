@@ -78,7 +78,8 @@ These tests are designed to be used with any `C++` application or game engine, h
 
 | Files		| Description						|
 | ------------- |:-----------------------------------------------------:|
-| `Vector.h`	| Templated structs that handle vector math						|
+| `Quaternion.h`	| Templated struct that handles quaternions						|
+| `Vector.h`	| Templated struct that handles vector math						|
 
 ### Source/GeometricTests/Math/Operations
 
