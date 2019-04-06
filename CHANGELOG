@@ -7,11 +7,11 @@
 + Simplified Vector2 syntax in Vector.h
 + Added new primitive to library, Triangle.h
 
-2018-01-08: v1.1.1:
+2019-01-08: v1.1.1:
 + Improved comments in GeometricTestLibrary.h
 
-2018-01-10: v1.1.2:
+2019-01-10: v1.1.2:
 + Negated "r" for solving of reflection vector in GeometricTestLibrary.h
 
-2018-02-07: v1.1.3:
+2019-02-07: v1.1.3:
 + Added Quaternion.h
