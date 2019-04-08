@@ -35,7 +35,7 @@ void AGeometricTestsGameModeBase::BeginPlay()
 	//TEST_ClosestPointOnRay();
 	
 	// Closest Point on Plane
-	TEST_ClosestPointOnPlane();
+	//TEST_ClosestPointOnPlane();
 	
 	// Closest Point on Sphere
 	//TEST_ClosestPointOnSphere();
@@ -62,7 +62,7 @@ void AGeometricTestsGameModeBase::BeginPlay()
 	//TEST_DoRaysIntersect();
 	
 	// Dynamic Intersection Sphere-Plane
-	//TEST_DoesSpherePlaneIntersect_Dynamic();
+	TEST_DoesSpherePlaneIntersect_Dynamic();
 	
 	// Static Intersection Sphere-Plane
 	//TEST_DoesSpherePlaneIntersect_Static();
@@ -267,7 +267,8 @@ void AGeometricTestsGameModeBase::TEST_DoesSpherePlaneIntersect_Dynamic()
 	const float SphereRadius = 5.f;
 	Circle<float> MyCircle(SphereRadius, SphereCenter);
 
-	Vector3<float> SphereDeltaVector = Vector3<float>(11.f, 3.5f, -9.f);
+	Vector3<float> SphereDeltaVector = Vector3<float>(2.f, 3.5f, 0.f);
+	//Vector3<float> SphereDeltaVector = Vector3<float>(11.f, 3.5f, -9.f);
 	
 	UGeometricTestLibrary::DoesSpherePlaneIntersect_Dynamic(
 		  MyPlane.Normal
@@ -298,14 +299,14 @@ void AGeometricTestsGameModeBase::TEST_DoesSpherePlaneIntersect_Static()
 
 void AGeometricTestsGameModeBase::TEST_DoSpheresIntersect_Dynamic()  
 {
-	Vector3<float> StationaryDeltaVector = Vector3<float>(3.f, -6.f, -9.f);
+	Vector3<float> StationaryDeltaVector = Vector3<float>(10.f, 2.f, -9.f);
 	Vector3<float> MovingDeltaVector = Vector3<float>(11.f, 3.5f, -9.f);
 	
 	const Vector3<float> StationarySphereCenter = Vector3<float>(-5.f, -5.f, -5.f);
 	Vector3<float> MovingSphereCenter = Vector3<float>::ZeroVector;
 	
 	const float StationarySphereRadius = 5.f;
-	const float MovingSphereRadius = 2.5f;
+	const float MovingSphereRadius = 6.f;
 
 	Circle<float> MovingCircle(MovingSphereRadius, MovingSphereCenter);
 	Circle<float> StationaryCircle(StationarySphereRadius, StationarySphereCenter);

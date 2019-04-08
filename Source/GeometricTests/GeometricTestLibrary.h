@@ -59,7 +59,7 @@
  * 17. Reflection Vector
  * 18. Barycentric Coordinates of Triangle in 3D
  *
- * Updated January 10, 2019
+ * Updated April 7, 2019
 */
 UCLASS()
 class GEOMETRICTESTS_API UGeometricTestLibrary : public UObject
@@ -154,7 +154,7 @@ public:
 	
 	// Dynamic Intersection Sphere-Plane
 	template<typename T>
-	static bool DoesSpherePlaneIntersect_Dynamic(
+	static int DoesSpherePlaneIntersect_Dynamic(
 		  const Vector3<T>& PlaneNormal	// must be normalized first
 		, float PlaneD							
 		, const Vector3<T>& SphereDeltaVector
@@ -1235,13 +1235,9 @@ inline static bool UGeometricTestLibrary::DoRaysIntersect(
  * r = radius of sphere
  * Ď = normalized delta vector, a.k.a. unit vector
  * ň = normalized surface normal of plane
- * c - r*ň = point of contact
- * c + t*Ď = motion of the center of the sphere
- *
- * NOTE: We are flipping d - c, using the inverse dot product to get signed distance
 */
 template<typename T>
-inline static bool UGeometricTestLibrary::DoesSpherePlaneIntersect_Dynamic(
+inline static int UGeometricTestLibrary::DoesSpherePlaneIntersect_Dynamic(
 	  const Vector3<T>& PlaneNormal			// must be normalized first
 	, float PlaneD
 	, const Vector3<T>& SphereDeltaVector
@@ -1251,12 +1247,13 @@ inline static bool UGeometricTestLibrary::DoesSpherePlaneIntersect_Dynamic(
 	// Solve normalized plane normal
 	Vector3<T> NormalizedPlaneNormal = MyMathLibrary::Normalize(PlaneNormal);
 
-	// Solve d - c
-	Vector3<T> Diff = SphereCenter - PlaneD;
-
-	// Solve d - c*ň, flipped
-	float Dot = -MyMathLibrary::DotProduct(Diff, NormalizedPlaneNormal);
-
+	// Solve d
+	float Dot = MyMathLibrary::DotProduct(NormalizedPlaneNormal, SphereCenter);
+	float d = Dot - PlaneD;
+	
+	// Solve c*ň
+	float cn = MyMathLibrary::DotProduct(SphereCenter, NormalizedPlaneNormal);
+	
 	// Solve Ď
 	Vector3<T> DeltaNormal = MyMathLibrary::Normalize(SphereDeltaVector);
 
@@ -1265,31 +1262,12 @@ inline static bool UGeometricTestLibrary::DoesSpherePlaneIntersect_Dynamic(
 
 	// If Denominator is zero, there is no intersection
 	if (Denominator == 0.f)
-		return false;
+		return INT_MAX;
 
-	// Solve t = d - c*ň + r \ Ď*ň
-	float t = (Dot + SphereRadius) / Denominator;
+	// Solve t = d - c*ň + r / Ď*ň
+	float t = d - cn + SphereRadius / Denominator;
 
-	// Solve l, the motion of the sphere
-	Vector3<T> l = SphereCenter + (DeltaNormal*t);
-
-	// If t < 0 or t > length of total relative displacement of sphere, intersection does not occur
-	if (t < 0 || t > l.Magnitude())
-	{
-		GEngine->AddOnScreenDebugMessage(
-			  -1, 30.f, FColor::Red
-			, TEXT("\nNo intersection!, GeometricTestLibrary.h:1281\n"));
-
-		return false;
-	}
-	else
-	{
-		GEngine->AddOnScreenDebugMessage(
-			  -1, 30.f, FColor::Red
-			, TEXT("\nSUCCESS! Sphere and plane intersect during time in question!, GeometricTestLibrary.h:1289\n"));
-
-		return true;
-	}
+	return 0;
 }
 
 /*
@@ -1351,7 +1329,7 @@ inline static int UGeometricTestLibrary::DoesSpherePlaneIntersect_Static(
  * r = sum of the sphere radii
  *
  * If ||e|| < r, then the spheres are intersecting at t = 0
- * If t < 0 or t > l, intersection does not occur
+ * If t < 0 or t > length of total relative displacement, intersection does not occur
  * If the square root argument is negative, there is no intersection
 */
 template<typename T>
@@ -1393,7 +1371,7 @@ inline static bool UGeometricTestLibrary::DoSpheresIntersect_Dynamic(
 	{
 		GEngine->AddOnScreenDebugMessage(
 			  1, 30.f, FColor::Red
-			, TEXT("\nFAILURE! No intersection! Square root value is negative!, GeometricTestLibrary.h:1396\n"));
+			, TEXT("\nFAILURE! No intersection! Square root value is negative!, GeometricTestLibrary.h:1374\n"));
 
 		Result = false;
 		return Result;
@@ -1401,30 +1379,15 @@ inline static bool UGeometricTestLibrary::DoSpheresIntersect_Dynamic(
 	
 	// Solve t
 	float t = LHS - RHS;
-
-	// Solve l, the position of the center of moving sphere at time t
-	Vector3<T> l = MovingSphereCenter + (NormalizedD*t);
-	
-	// If t < 0 or t > length of total relative displacement of spheres, intersection does not occur
-	if (t < 0.f || t > l.Magnitude())
+		
+	// If ||e|| < r, then the spheres are intersecting at t = 0 during the time in question
+	if (eMag < r)
 	{
 		GEngine->AddOnScreenDebugMessage(
-			  2, 30.f, FColor::Red
-			, TEXT("\nFAILURE! No intersection!, GeometricTestLibrary.h:1413\n"));
+			3, 30.f, FColor::Red
+			, TEXT("\nSUCCESS! Spheres intersected at t = 0!, GeometricTestLibrary.h:1388\n"));
 
-		Result = false;
-	}
-	else
-	{
-		// If ||e|| < r, then the spheres are intersecting at t = 0 during the time in question
-		if (eMag < r)
-		{
-			GEngine->AddOnScreenDebugMessage(
-				  3, 30.f, FColor::Red
-				, TEXT("\nSUCCESS! Spheres intersected at t = 0!, GeometricTestLibrary.h:1424\n"));
-
-			Result = true;
-		}
+		Result = true;
 	}
 	
 	return Result;	
@@ -1460,7 +1423,7 @@ inline static bool UGeometricTestLibrary::DoSpheresIntersect_Static(
 	{
 		GEngine->AddOnScreenDebugMessage(
 			  1, 30.f, FColor::Red
-			, TEXT("\nSUCCESS! Spheres intersect!, GeometricTestLibrary.h:1463\n"));
+			, TEXT("\nSUCCESS! Spheres intersect!, GeometricTestLibrary.h:1426\n"));
 
 		return true;
 	}
@@ -1468,7 +1431,7 @@ inline static bool UGeometricTestLibrary::DoSpheresIntersect_Static(
 	{
 		GEngine->AddOnScreenDebugMessage(
 			  2, 30.f, FColor::Red
-			, TEXT("\nFAILURE! Spheres do not intersect!, GeometricTestLibrary.h:1471\n"));
+			, TEXT("\nFAILURE! Spheres do not intersect!, GeometricTestLibrary.h:1434\n"));
 
 		return false;
 	}	
@@ -1534,7 +1497,7 @@ inline static Vector3<T> UGeometricTestLibrary::PointOfIntersection(
 	{
 		GEngine->AddOnScreenDebugMessage(
 			  1, 30.f, FColor::Red
-			, TEXT("\nFAILURE! A pair of planes are parallel! No intersection!, GeometricTestLibrary.h:1537"));
+			, TEXT("\nFAILURE! A pair of planes are parallel! No intersection!, GeometricTestLibrary.h:1500"));
 
 		return Result;
 	}
@@ -1712,7 +1675,7 @@ inline static Vector3<T> UGeometricTestLibrary::SolveBarycentricCoordinates3D(
 	{
 		GEngine->AddOnScreenDebugMessage(
 			  1, 30.f, FColor::Red
-			, TEXT("\nFAILURE! No coordinates!, GeometricTestLibrary.h:1714\n"));
+			, TEXT("\nFAILURE! No coordinates!, GeometricTestLibrary.h:1678\n"));
 
 		return Result;
 	}
