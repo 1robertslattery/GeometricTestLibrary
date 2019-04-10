@@ -652,9 +652,6 @@ inline static Vector2<T> UGeometricTestLibrary::DoLinesIntersect(
  * that side. If the point of intersection with the
  * plane is within AABB, there is intersection. 
  * Otherwise, there is not.
- *
- * 1, -1	No Intersection
- * 0		Intersection
 */
 template<typename T>
 inline static float UGeometricTestLibrary::DoesRayAABBIntersect(
@@ -856,7 +853,7 @@ inline static bool UGeometricTestLibrary::DoesRayPlaneIntersect(
 	{
 		GEngine->AddOnScreenDebugMessage(
 			  1, 30.f, FColor::Red
-			, TEXT("\nRay parallel to plane! No intersection!, GeometricTestLibrary.h:859\n"));
+			, TEXT("\nRay parallel to plane! No intersection!, GeometricTestLibrary.h:856\n"));
 
 		return Result;
 	}
@@ -877,7 +874,7 @@ inline static bool UGeometricTestLibrary::DoesRayPlaneIntersect(
 	{
 		GEngine->AddOnScreenDebugMessage(
 			  1, 30.f, FColor::Red
-			, TEXT("\nFAILURE! No intersection!, GeometricTestLibrary.h:880\n"));
+			, TEXT("\nFAILURE! No intersection!, GeometricTestLibrary.h:877\n"));
 
 		Result = false;
 	}
@@ -885,7 +882,7 @@ inline static bool UGeometricTestLibrary::DoesRayPlaneIntersect(
 	{
 		GEngine->AddOnScreenDebugMessage(
 			  1, 30.f, FColor::Red
-			, TEXT("\nSUCCESS! Ray and Plane intersect!, GeometricTestLibrary.h:888\n"));
+			, TEXT("\nSUCCESS! Ray and Plane intersect!, GeometricTestLibrary.h:885\n"));
 
 		Result = true;
 	}
@@ -933,7 +930,7 @@ inline static bool UGeometricTestLibrary::DoesRaySphereIntersect(
 	{
 		GEngine->AddOnScreenDebugMessage(
 			  1, 30.f, FColor::Red
-			, TEXT("Intersection at point of ray origin!, GeometricTestLibrary.h:936"));
+			, TEXT("Intersection at point of ray origin!, GeometricTestLibrary.h:933"));
 
 		Result = true;
 		return Result;
@@ -953,7 +950,7 @@ inline static bool UGeometricTestLibrary::DoesRaySphereIntersect(
 	{
 		GEngine->AddOnScreenDebugMessage(
 			  2, 30.f, FColor::Red
-			, TEXT("\nFAILURE! No intersection!, Square root value is negative!, GeometricTestLibrary.h:956\n"));
+			, TEXT("\nFAILURE! No intersection!, Square root value is negative!, GeometricTestLibrary.h:953\n"));
 
 		return Result;
 	}
@@ -969,7 +966,7 @@ inline static bool UGeometricTestLibrary::DoesRaySphereIntersect(
 	{
 		GEngine->AddOnScreenDebugMessage(
 			  3, 30.f, FColor::Red
-			, TEXT("\nFAILURE! No intersection!, GeometricTestLibrary.h:972\n"));
+			, TEXT("\nFAILURE! No intersection!, GeometricTestLibrary.h:969\n"));
 
 		Result = false;
 	}
@@ -977,7 +974,7 @@ inline static bool UGeometricTestLibrary::DoesRaySphereIntersect(
 	{
 		GEngine->AddOnScreenDebugMessage(
 			  4, 30.f, FColor::Red
-			, TEXT("\nSUCCESS! Ray and sphere intersected at t = 0!, GeometricTestLibrary.h:980\n"));
+			, TEXT("\nSUCCESS! Ray and sphere intersected at t = 0!, GeometricTestLibrary.h:977\n"));
 
 		Result = true;
 	}
@@ -1176,7 +1173,7 @@ inline static bool UGeometricTestLibrary::DoRaysIntersect(
 	{
 		GEngine->AddOnScreenDebugMessage(
 			  1, 30.f, FColor::Red
-			, TEXT("\nRays are coincident! Infinite number of solutions!, GeometricTestLibrary.h:1179"));
+			, TEXT("\nRays are coincident! Infinite number of solutions!, GeometricTestLibrary.h:1176"));
 		
 		return false;
 	}
@@ -1187,7 +1184,7 @@ inline static bool UGeometricTestLibrary::DoRaysIntersect(
 	{
 		GEngine->AddOnScreenDebugMessage(
 			  2, 30.f, FColor::Red
-			, TEXT("\nRays are parallel! No solutions and no intersection!, GeometricTestLibrary.h:1190"));
+			, TEXT("\nRays are parallel! No solutions and no intersection!, GeometricTestLibrary.h:1187"));
 
 		return false;
 	}
@@ -1207,7 +1204,7 @@ inline static bool UGeometricTestLibrary::DoRaysIntersect(
 	{
 		GEngine->AddOnScreenDebugMessage(
 			2, 30.f, FColor::Red
-			, TEXT("\nRays are skew! They are neither parallel nor do they intersect!, GeometricTestLibrary.h:1210"));
+			, TEXT("\nRays are skew! They are neither parallel nor do they intersect!, GeometricTestLibrary.h:1207"));
 
 		return false;
 	}
@@ -1215,7 +1212,7 @@ inline static bool UGeometricTestLibrary::DoRaysIntersect(
 	{
 		GEngine->AddOnScreenDebugMessage(
 			2, 30.f, FColor::Red
-			, TEXT("\nSUCCESS! Rays intersect!, GeometricTestLibrary.h:1218"));
+			, TEXT("\nSUCCESS! Rays intersect!, GeometricTestLibrary.h:1215"));
 
 		return true;
 	}
@@ -1371,7 +1368,7 @@ inline static bool UGeometricTestLibrary::DoSpheresIntersect_Dynamic(
 	{
 		GEngine->AddOnScreenDebugMessage(
 			  1, 30.f, FColor::Red
-			, TEXT("\nFAILURE! No intersection! Square root value is negative!, GeometricTestLibrary.h:1374\n"));
+			, TEXT("\nFAILURE! No intersection! Square root value is negative!, GeometricTestLibrary.h:1371\n"));
 
 		Result = false;
 		return Result;
@@ -1385,7 +1382,7 @@ inline static bool UGeometricTestLibrary::DoSpheresIntersect_Dynamic(
 	{
 		GEngine->AddOnScreenDebugMessage(
 			3, 30.f, FColor::Red
-			, TEXT("\nSUCCESS! Spheres intersected at t = 0!, GeometricTestLibrary.h:1388\n"));
+			, TEXT("\nSUCCESS! Spheres intersected at t = 0!, GeometricTestLibrary.h:1385\n"));
 
 		Result = true;
 	}
@@ -1423,7 +1420,7 @@ inline static bool UGeometricTestLibrary::DoSpheresIntersect_Static(
 	{
 		GEngine->AddOnScreenDebugMessage(
 			  1, 30.f, FColor::Red
-			, TEXT("\nSUCCESS! Spheres intersect!, GeometricTestLibrary.h:1426\n"));
+			, TEXT("\nSUCCESS! Spheres intersect!, GeometricTestLibrary.h:1423\n"));
 
 		return true;
 	}
@@ -1431,7 +1428,7 @@ inline static bool UGeometricTestLibrary::DoSpheresIntersect_Static(
 	{
 		GEngine->AddOnScreenDebugMessage(
 			  2, 30.f, FColor::Red
-			, TEXT("\nFAILURE! Spheres do not intersect!, GeometricTestLibrary.h:1434\n"));
+			, TEXT("\nFAILURE! Spheres do not intersect!, GeometricTestLibrary.h:1431\n"));
 
 		return false;
 	}	
@@ -1497,7 +1494,7 @@ inline static Vector3<T> UGeometricTestLibrary::PointOfIntersection(
 	{
 		GEngine->AddOnScreenDebugMessage(
 			  1, 30.f, FColor::Red
-			, TEXT("\nFAILURE! A pair of planes are parallel! No intersection!, GeometricTestLibrary.h:1500"));
+			, TEXT("\nFAILURE! A pair of planes are parallel! No intersection!, GeometricTestLibrary.h:1497"));
 
 		return Result;
 	}
@@ -1675,7 +1672,7 @@ inline static Vector3<T> UGeometricTestLibrary::SolveBarycentricCoordinates3D(
 	{
 		GEngine->AddOnScreenDebugMessage(
 			  1, 30.f, FColor::Red
-			, TEXT("\nFAILURE! No coordinates!, GeometricTestLibrary.h:1678\n"));
+			, TEXT("\nFAILURE! No coordinates!, GeometricTestLibrary.h:1675\n"));
 
 		return Result;
 	}
